@@ -1,15 +1,17 @@
-  <!DOCTYPE html>
+
+<!DOCTYPE html>
+
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport"/>
 <title>দোকান ট্র্যাকার</title>
-<meta name="theme-color" content="#0f2744">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="দোকান ট্র্যাকার">
-<link rel="manifest" href="manifest.json">
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+<meta content="#0f2744" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="দোকান ট্র্যাকার" name="apple-mobile-web-app-title"/>
+<link href="manifest.json" rel="manifest"/>
+<script async="" defer="" src="https://accounts.google.com/gsi/client"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
 
@@ -45,6 +47,8 @@ body{
   font-size:16px;
   line-height:1.55;
   -webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:contain;
+  touch-action:pan-x pan-y;
 }
 button{cursor:pointer;font-family:inherit;border:none;outline:none;transition:var(--transition)}
 input,textarea,select{font-family:inherit;outline:none;transition:var(--transition)}
@@ -333,274 +337,225 @@ textarea::placeholder{color:#b4c0ce}
 </style>
 </head>
 <body>
-
 <div class="header">
-  <div class="h-top">
-    <div>
-      <div class="h-title">🏪 আমার দোকান</div>
-      <div class="h-date" id="H_DATE"></div>
-    </div>
-    <div class="h-stats">
-      <div class="h-stat-box">
-        <div class="h-stat-v" id="H_SALES">৳0</div>
-        <div class="h-stat-l">বিক্রয়</div>
-      </div>
-      <div class="h-stat-box">
-        <div class="h-stat-v" id="H_EXP">৳0</div>
-        <div class="h-stat-l">খরচ</div>
-      </div>
-      <div class="h-stat-box">
-        <div class="h-stat-v" id="H_PROFIT">৳0</div>
-        <div class="h-stat-l">লাভ</div>
-      </div>
-    </div>
-  </div>
-  <div class="prog"><div class="prog-f" id="H_PROG" style="width:0%"></div></div>
-  <div class="prog-t" id="H_PROGT">লক্ষ্য ৳1000 — 0% সম্পন্ন</div>
+<div class="h-top">
+<div>
+<div class="h-title">🏪 আমার দোকান</div>
+<div class="h-date" id="H_DATE"></div>
 </div>
-
+<div class="h-stats">
+<div class="h-stat-box">
+<div class="h-stat-v" id="H_SALES">৳0</div>
+<div class="h-stat-l">বিক্রয়</div>
+</div>
+<div class="h-stat-box">
+<div class="h-stat-v" id="H_EXP">৳0</div>
+<div class="h-stat-l">খরচ</div>
+</div>
+<div class="h-stat-box">
+<div class="h-stat-v" id="H_PROFIT">৳0</div>
+<div class="h-stat-l">লাভ</div>
+</div>
+</div>
+</div>
+<div class="prog"><div class="prog-f" id="H_PROG" style="width:0%"></div></div>
+<div class="prog-t" id="H_PROGT">লক্ষ্য ৳1000 — 0% সম্পন্ন</div>
+</div>
 <div class="bnav">
-  <button class="nb on" onclick="goPanel('home')"><span class="nb-i">🏠</span>হোম</button>
-  <button class="nb" onclick="goPanel('sales')"><span class="nb-i">🛒</span>বিক্রয়</button>
-  <button class="nb" onclick="goPanel('expense')"><span class="nb-i">💸</span>খরচ</button>
-  <button class="nb" onclick="goPanel('baki')"><span class="nb-i">📋</span>বাকি</button>
-  <button class="nb" onclick="goPanel('customer')"><span class="nb-i">👥</span>কাস্টমার</button>
-  <button class="nb" onclick="goPanel('menu')"><span class="nb-i">✏️</span>মেনু</button>
-  <button class="nb" onclick="goPanel('backup')"><span class="nb-i">💾</span>ব্যাকআপ</button>
-  <button class="nb" onclick="goPanel('report')"><span class="nb-i">📊</span>রিপোর্ট</button>
-</div>
+<button class="nb on" onclick="goPanel('home')"><span class="nb-i">🏠</span>হোম</button>
+<button class="nb" onclick="goPanel('sales')"><span class="nb-i">🛒</span>বিক্রয়</button>
+<button class="nb" onclick="goPanel('expense')"><span class="nb-i">💸</span>খরচ</button>
+<button class="nb" onclick="goPanel('baki')"><span class="nb-i">📋</span>বাকি</button>
+<button class="nb" onclick="goPanel('customer')"><span class="nb-i">👥</span>কাস্টমার</button>
+<button class="nb" onclick="goPanel('menu')"><span class="nb-i">✏️</span>মেনু</button>
 
+<button class="nb" onclick="goPanel('report')"><span class="nb-i">📊</span>রিপোর্ট</button>
+</div>
 <div class="panel on" id="P_home">
-  <div class="card">
-    <div class="rb" style="margin-bottom:7px">
-      <span class="ctitle" style="margin:0">🎯 আজকের লক্ষ্য</span>
-      <div id="TD_DISP" class="row">
-        <span class="fw7 oc" id="TD_VAL">৳1000</span>
-        <button class="bgr" onclick="tdEdit(1)">✏️</button>
-      </div>
-      <div id="TD_EDIT" style="display:none" class="row">
-        <input id="TD_INP" class="si" type="number" value="1000" style="width:85px">
-        <button class="bg" onclick="tdSave()">✓</button>
-        <button class="bgr" onclick="tdEdit(0)">✕</button>
-      </div>
-    </div>
-    <div id="HOME_PROG"></div>
-  </div>
-  <div class="sg2" id="HOME_KPI"></div>
-  <div id="HOME_INS"></div>
-  <div class="card">
-    <div class="ctitle">🏆 আজকের টপ আইটেম</div>
-    <div id="HOME_TOP"></div>
-  </div>
-  <div class="card">
-    <div class="ctitle">⏰ সময় অনুযায়ী বিক্রয়</div>
-    <div id="HOME_TIME"></div>
-  </div>
-  <div class="card">
-    <div class="ctitle">📅 গত ৭ দিন</div>
-    <div id="HOME_WEEK"></div>
-  </div>
+<div class="card">
+<div class="rb" style="margin-bottom:7px">
+<span class="ctitle" style="margin:0">🎯 আজকের লক্ষ্য</span>
+<div class="row" id="TD_DISP">
+<span class="fw7 oc" id="TD_VAL">৳1000</span>
+<button class="bgr" onclick="tdEdit(1)">✏️</button>
 </div>
-
+<div class="row" id="TD_EDIT" style="display:none">
+<input class="si" id="TD_INP" style="width:85px" type="number" value="1000"/>
+<button class="bg" onclick="tdSave()">✓</button>
+<button class="bgr" onclick="tdEdit(0)">✕</button>
+</div>
+</div>
+<div id="HOME_PROG"></div>
+</div>
+<div class="sg2" id="HOME_KPI"></div>
+<div id="HOME_INS"></div>
+<div class="card">
+<div class="ctitle">🏆 আজকের টপ আইটেম</div>
+<div id="HOME_TOP"></div>
+</div>
+<div class="card">
+<div class="ctitle">⏰ সময় অনুযায়ী বিক্রয়</div>
+<div id="HOME_TIME"></div>
+</div>
+<div class="card">
+<div class="ctitle">📅 গত ৭ দিন</div>
+<div id="HOME_WEEK"></div>
+</div>
+</div>
 <div class="panel" id="P_sales">
-  <div class="card">
-    <div class="ctitle">⏰ বিক্রয়ের সময়</div>
-    <div class="time-row" id="TIME_PILLS"></div>
-  </div>
-  <div class="pills" id="CAT_PILLS"></div>
-  <div class="igrid" id="ITEM_GRID"></div>
-  <div class="card">
-    <div class="ctitle">💰 ডিসকাউন্ট</div>
-    <div class="row">
-      <span class="fs12">ছাড়:</span>
-      <input id="DISC" class="si" type="number" min="0" max="100" value="0" style="width:65px"> %
-    </div>
-  </div>
-  <div id="ORD_SUM"></div>
-  <button class="bp" onclick="saveOrder()">✅ অর্ডার সেভ করুন</button>
-  <div class="card" style="margin-top:11px">
-    <div class="ctitle">📦 আজকের অর্ডার</div>
-    <div id="TODAY_ORDS"></div>
-  </div>
+<div class="card">
+<div class="ctitle">⏰ বিক্রয়ের সময়</div>
+<div class="time-row" id="TIME_PILLS"></div>
 </div>
-
+<div class="pills" id="CAT_PILLS"></div>
+<div class="igrid" id="ITEM_GRID"></div>
+<div class="card">
+<div class="ctitle">💰 ডিসকাউন্ট</div>
+<div class="row">
+<span class="fs12">ছাড়:</span>
+<input class="si" id="DISC" max="100" min="0" style="width:65px" type="number" value="0"/> %
+    </div>
+</div>
+<div id="ORD_SUM"></div>
+<button class="bp" onclick="saveOrder()">✅ অর্ডার সেভ করুন</button>
+<div class="card" style="margin-top:11px">
+<div class="ctitle">📦 আজকের অর্ডার</div>
+<div id="TODAY_ORDS"></div>
+</div>
+</div>
 <div class="panel" id="P_expense">
-  <div class="card">
-    <div class="ctitle">📅 তারিখ</div>
-    <input type="date" id="EXP_DATE" class="fi" style="margin:0" onchange="renderExpItems()">
-  </div>
-  <div id="EXP_CARDS"></div>
-  <div class="card" style="background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;border:none">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <span style="font-size:16px;font-weight:700">💰 মোট খরচ</span>
-      <span style="font-size:24px;font-weight:800" id="EXP_GT">৳0</span>
-    </div>
-  </div>
+<div class="card">
+<div class="ctitle">📅 তারিখ</div>
+<input class="fi" id="EXP_DATE" onchange="renderExpItems()" style="margin:0" type="date"/>
 </div>
-
+<div id="EXP_CARDS"></div>
+<div class="card" style="background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;border:none">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<span style="font-size:16px;font-weight:700">💰 মোট খরচ</span>
+<span id="EXP_GT" style="font-size:24px;font-weight:800">৳0</span>
+</div>
+</div>
+</div>
 <div class="panel" id="P_baki">
-  <div class="card">
-    <div class="ctitle">➕ নতুন বাকি</div>
-    <input id="BK_NAME" class="fi" placeholder="গ্রাহকের নাম *" type="text">
-    <input id="BK_PHONE" class="fi" placeholder="ফোন নম্বর" type="tel">
-    <input id="BK_AMT" class="fi" placeholder="পরিমাণ (টাকা) *" type="number" min="0">
-    <input id="BK_DUE" class="fi" placeholder="পরিশোধের তারিখ" type="date">
-    <input id="BK_NOTE" class="fi" placeholder="নোট" type="text">
-    <button class="bp" onclick="addBaki()">যোগ করুন</button>
-  </div>
-  <div id="BK_OVR"></div>
-  <div id="BK_UNBN"></div>
-  <div id="BK_LIST"></div>
+<div class="card">
+<div class="ctitle">➕ নতুন বাকি</div>
+<input class="fi" id="BK_NAME" placeholder="গ্রাহকের নাম *" type="text"/>
+<input class="fi" id="BK_PHONE" placeholder="ফোন নম্বর" type="tel"/>
+<input class="fi" id="BK_AMT" min="0" placeholder="পরিমাণ (টাকা) *" type="number"/>
+<input class="fi" id="BK_DUE" placeholder="পরিশোধের তারিখ" type="date"/>
+<input class="fi" id="BK_NOTE" placeholder="নোট" type="text"/>
+<button class="bp" onclick="addBaki()">যোগ করুন</button>
 </div>
-
+<div id="BK_OVR"></div>
+<div id="BK_UNBN"></div>
+<div id="BK_LIST"></div>
+</div>
 <div class="panel" id="P_customer">
-  <div class="card">
-    <div class="ctitle">➕ নতুন কাস্টমার</div>
-    <input id="CUS_NAME" class="fi" placeholder="নাম *" type="text">
-    <input id="CUS_PHONE" class="fi" placeholder="ফোন নম্বর" type="tel">
-    <input id="CUS_NOTE" class="fi" placeholder="নোট" type="text">
-    <button class="bp" onclick="addCustomer()">যোগ করুন</button>
-  </div>
-  <div class="sg2" id="CUS_KPI"></div>
-  <div class="card">
-    <div class="ctitle">👥 কাস্টমার তালিকা</div>
-    <input id="CUS_SEARCH" class="fi" placeholder="🔍 নাম বা ফোন দিয়ে খুঁজুন" type="text" oninput="renderCustomers()">
-    <div id="CUS_LIST"></div>
-  </div>
+<div class="card">
+<div class="ctitle">➕ নতুন কাস্টমার</div>
+<input class="fi" id="CUS_NAME" placeholder="নাম *" type="text"/>
+<input class="fi" id="CUS_PHONE" placeholder="ফোন নম্বর" type="tel"/>
+<input class="fi" id="CUS_NOTE" placeholder="নোট" type="text"/>
+<button class="bp" onclick="addCustomer()">যোগ করুন</button>
 </div>
-
+<div class="sg2" id="CUS_KPI"></div>
+<div class="card">
+<div class="ctitle">👥 কাস্টমার তালিকা</div>
+<input class="fi" id="CUS_SEARCH" oninput="renderCustomers()" placeholder="🔍 নাম বা ফোন দিয়ে খুঁজুন" type="text"/>
+<div id="CUS_LIST"></div>
+</div>
+</div>
 <div class="panel" id="P_menu">
-  <div class="card">
-    <div class="ctitle">📂 ক্যাটাগরি ম্যানেজমেন্ট</div>
-    <div id="CAT_MGMT_LIST"></div>
-    <div class="div"></div>
-    <div class="row" style="margin-top:4px">
-      <input id="NEW_CAT_NAME" class="fi" style="margin:0;flex:1" placeholder="নতুন ক্যাটাগরি নাম" type="text">
-      <input id="NEW_CAT_COLOR" type="color" value="#ea580c" style="width:36px;height:36px;border:none;border-radius:7px;cursor:pointer;padding:2px">
-      <button class="bp" style="margin:0;width:auto;padding:9px 14px" onclick="addCategory()">+ যোগ</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="ctitle">➕ নতুন আইটেম যোগ করুন</div>
-    <select id="NEW_ITEM_CAT" class="fi">
-    </select>
-    <input id="NEW_ITEM_NAME" class="fi" placeholder="আইটেমের নাম *" type="text">
-    <input id="NEW_ITEM_PRICE" class="fi" placeholder="মূল্য (৳) *" type="number" min="1">
-    <button class="bp" onclick="addMenuItem()">✅ আইটেম যোগ করুন</button>
-  </div>
-
-  <div class="card">
-    <div class="rb" style="margin-bottom:9px">
-      <span class="ctitle" style="margin:0">📋 বিদ্যমান মেনু</span>
-      <span class="fs11 gray" id="MENU_COUNT"></span>
-    </div>
-    <div class="pills" id="MENU_CAT_FILTER"></div>
-    <div id="MENU_EDIT_LIST"></div>
-  </div>
+<div class="card">
+<div class="ctitle">📂 ক্যাটাগরি ম্যানেজমেন্ট</div>
+<div id="CAT_MGMT_LIST"></div>
+<div class="div"></div>
+<div class="row" style="margin-top:4px">
+<input class="fi" id="NEW_CAT_NAME" placeholder="নতুন ক্যাটাগরি নাম" style="margin:0;flex:1" type="text"/>
+<input id="NEW_CAT_COLOR" style="width:36px;height:36px;border:none;border-radius:7px;cursor:pointer;padding:2px" type="color" value="#ea580c"/>
+<button class="bp" onclick="addCategory()" style="margin:0;width:auto;padding:9px 14px">+ যোগ</button>
 </div>
-
-<div class="panel" id="P_backup">
-  <div class="sg2" id="BKP_STATS"></div>
-
-  <div class="card">
-    <div class="ctitle">📤 ডেটা Export করুন</div>
-    <p class="fs12 gray" style="margin-bottom:10px;line-height:1.6">সব ডেটা একটি JSON ফাইলে সেভ হবে। ফোন বদলালে বা ব্রাউজার ক্লিয়ার হলেও এই ফাইল থেকে সব ফিরিয়ে আনতে পারবেন।</p>
-    <button class="bp" onclick="exportBackup()" style="background:linear-gradient(to right,#16a34a,#15803d)">📥 JSON ফাইল ডাউনলোড করুন</button>
-    <div style="margin-top:8px">
-      <button class="bb" onclick="copyBackup()" style="width:100%;padding:9px;font-size:13px;font-weight:700;border-radius:9px">📋 ক্লিপবোর্ডে কপি করুন</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="ctitle">📂 ডেটা Import করুন</div>
-    <p class="fs12 gray" style="margin-bottom:10px;line-height:1.6">আগের ব্যাকআপ ফাইল বা কপি করা JSON পেস্ট করুন। বিদ্যমান ডেটা মুছে নতুন ডেটা লোড হবে।</p>
-    <textarea id="BKP_IMPORT_TEXT" class="fta" style="min-height:90px;font-size:11px;font-family:monospace" placeholder='{"orders":[...],"expenses":[...],...} — এখানে পেস্ট করুন'></textarea>
-    <label class="bp" style="display:block;text-align:center;margin-bottom:7px;cursor:pointer;background:linear-gradient(to right,#2563eb,#1d4ed8)">
-      📁 ফাইল থেকে Import
-      <input type="file" accept=".json" style="display:none" onchange="importFromFile(this)">
-    </label>
-    <button class="bp" onclick="importBackup()" style="background:linear-gradient(to right,#ea580c,#f59e0b)">✅ Import করুন</button>
-  </div>
-
-  <div class="card" style="border:1.5px solid #fca5a5">
-    <div class="ctitle" style="color:#dc2626">⚠️ ডেটা রিসেট</div>
-    <p class="fs12 gray" style="margin-bottom:10px;line-height:1.6">সতর্কতা: এটি করলে সব অর্ডার, খরচ, বাকি, কাস্টমার ডেটা স্থায়ীভাবে মুছে যাবে।</p>
-    <button class="bp" onclick="resetAllData()" style="background:linear-gradient(to right,#dc2626,#b91c1c)">🗑️ সব ডেটা মুছুন</button>
-  </div>
-
-  <div class="card">
-    <div class="ctitle">🕐 ব্যাকআপ ইতিহাস</div>
-    <div id="BKP_HISTORY"></div>
-  </div>
+</div>
+<div class="card">
+<div class="ctitle">➕ নতুন আইটেম যোগ করুন</div>
+<select class="fi" id="NEW_ITEM_CAT">
+</select>
+<input class="fi" id="NEW_ITEM_NAME" placeholder="আইটেমের নাম *" type="text"/>
+<input class="fi" id="NEW_ITEM_PRICE" min="1" placeholder="মূল্য (৳) *" type="number"/>
+<button class="bp" onclick="addMenuItem()">✅ আইটেম যোগ করুন</button>
+</div>
+<div class="card">
+<div class="rb" style="margin-bottom:9px">
+<span class="ctitle" style="margin:0">📋 বিদ্যমান মেনু</span>
+<span class="fs11 gray" id="MENU_COUNT"></span>
+</div>
+<div class="pills" id="MENU_CAT_FILTER"></div>
+<div id="MENU_EDIT_LIST"></div>
+</div>
 </div>
 
 <div class="panel" id="P_report">
-  <div class="pills" id="RPT_TYPE"></div>
-  <div class="card">
-    <div class="rb">
-      <span class="ctitle" style="margin:0">📅 সময়কাল</span>
-      <div class="row">
-        <input type="month" id="RPT_MON" class="si" onchange="renderReport()">
-        <button class="bb" onclick="printReport()" style="padding:5px 10px;font-size:12px">🖨️ প্রিন্ট</button>
-      </div>
-    </div>
-  </div>
-  <div class="sg3" id="RPT_KPI"></div>
-  <div class="card">
-    <div class="ctitle" id="RPT_CTITLE">📈 বিক্রয় চার্ট</div>
-    <div id="RPT_CHART"></div>
-  </div>
-  <div class="card">
-    <div class="ctitle">🍕 ক্যাটাগরি অনুযায়ী</div>
-    <div id="RPT_CAT"></div>
-  </div>
-  <div class="card">
-    <div class="ctitle">⏰ সময় অনুযায়ী</div>
-    <div id="RPT_TIME"></div>
-  </div>
-  <div class="card">
-    <div class="ctitle">🏆 টপ ও লোয়েস্ট আইটেম</div>
-    <div id="RPT_PROD"></div>
-  </div>
-  <div class="card">
-    <div class="ctitle">🔥 বিক্রয় হিটম্যাপ (গত ২৮ দিন)</div>
-    <div id="RPT_HM"></div>
-  </div>
-  <div class="card">
-    <div class="ctitle">🎯 লক্ষ্য বনাম অর্জন</div>
-    <div id="RPT_TGT"></div>
-  </div>
-
-  <div class="card" id="RPT_CMP_CARD" style="display:none">
-    <div class="rb" style="margin-bottom:9px">
-      <span class="ctitle" style="margin:0">📊 মাসিক তুলনা</span>
-      <span class="fs11 gray">এই মাস vs গত মাস</span>
-    </div>
-    <div id="RPT_CMP"></div>
-  </div>
-
-  <div class="card" id="RPT_PROFIT_CARD">
-    <div class="rb" style="margin-bottom:9px">
-      <span class="ctitle" style="margin:0">💰 আইটেম-ওয়াইজ রাজস্ব</span>
-      <span class="fs11 gray" id="RPT_PROFIT_PERIOD"></span>
-    </div>
-    <div id="RPT_PROFIT"></div>
-  </div>
+<div class="pills" id="RPT_TYPE"></div>
+<div class="card">
+<div class="rb">
+<span class="ctitle" style="margin:0">📅 সময়কাল</span>
+<div class="row">
+<input class="si" id="RPT_MON" onchange="renderReport()" type="month"/>
+<button class="bb" onclick="printReport()" style="padding:5px 10px;font-size:12px">🖨️ প্রিন্ট</button>
 </div>
-
-<div class="modal-bg" id="CUS_HIST_MODAL" style="display:none" onclick="closeCusHist(event)">
-  <div class="modal-box">
-    <div class="modal-hdr">
-      <span class="modal-title" id="CUS_HIST_NAME">কাস্টমার হিস্ট্রি</span>
-      <button class="modal-close" onclick="closeCusHistDirect()">✕</button>
-    </div>
-    <div class="sg2" id="CUS_HIST_KPI" style="margin-bottom:10px"></div>
-    <div class="fw7 fs12" style="margin-bottom:7px;color:#475569">📦 অর্ডার ইতিহাস</div>
-    <div id="CUS_HIST_LIST"></div>
-  </div>
 </div>
-
+</div>
+<div class="sg3" id="RPT_KPI"></div>
+<div class="card">
+<div class="ctitle" id="RPT_CTITLE">📈 বিক্রয় চার্ট</div>
+<div id="RPT_CHART"></div>
+</div>
+<div class="card">
+<div class="ctitle">🍕 ক্যাটাগরি অনুযায়ী</div>
+<div id="RPT_CAT"></div>
+</div>
+<div class="card">
+<div class="ctitle">⏰ সময় অনুযায়ী</div>
+<div id="RPT_TIME"></div>
+</div>
+<div class="card">
+<div class="ctitle">🏆 টপ ও লোয়েস্ট আইটেম</div>
+<div id="RPT_PROD"></div>
+</div>
+<div class="card">
+<div class="ctitle">🔥 বিক্রয় হিটম্যাপ (গত ২৮ দিন)</div>
+<div id="RPT_HM"></div>
+</div>
+<div class="card">
+<div class="ctitle">🎯 লক্ষ্য বনাম অর্জন</div>
+<div id="RPT_TGT"></div>
+</div>
+<div class="card" id="RPT_CMP_CARD" style="display:none">
+<div class="rb" style="margin-bottom:9px">
+<span class="ctitle" style="margin:0">📊 মাসিক তুলনা</span>
+<span class="fs11 gray">এই মাস vs গত মাস</span>
+</div>
+<div id="RPT_CMP"></div>
+</div>
+<div class="card" id="RPT_PROFIT_CARD">
+<div class="rb" style="margin-bottom:9px">
+<span class="ctitle" style="margin:0">💰 আইটেম-ওয়াইজ রাজস্ব</span>
+<span class="fs11 gray" id="RPT_PROFIT_PERIOD"></span>
+</div>
+<div id="RPT_PROFIT"></div>
+</div>
+</div>
+<div class="modal-bg" id="CUS_HIST_MODAL" onclick="closeCusHist(event)" style="display:none">
+<div class="modal-box">
+<div class="modal-hdr">
+<span class="modal-title" id="CUS_HIST_NAME">কাস্টমার হিস্ট্রি</span>
+<button class="modal-close" onclick="closeCusHistDirect()">✕</button>
+</div>
+<div class="sg2" id="CUS_HIST_KPI" style="margin-bottom:10px"></div>
+<div class="fw7 fs12" style="margin-bottom:7px;color:#475569">📦 অর্ডার ইতিহাস</div>
+<div id="CUS_HIST_LIST"></div>
+</div>
+</div>
 <script>
 // CONSTANTS
 var DEFAULT_MENU=[
@@ -651,9 +606,20 @@ reloadMenuData();
 var TIMES=["সকাল","দুপুর","বিকাল","রাত"];
 var TC={সকাল:"#f59e0b",দুপুর:"#f97316",বিকাল:"#06b6d4",রাত:"#8b5cf6"};
 
-var EXP_CATS=["ফুচকা","জুস","বেতন","অন্যান্য"];
-var EXP_ICONS={"ফুচকা":"🍡","জুস":"🥤","বেতন":"💵","অন্যান্য":"📦"};
-var EXP_COLORS={"ফুচকা":"#f97316","জুস":"#16a34a","বেতন":"#2563eb","অন্যান্য":"#8b5cf6"};
+var DEFAULT_EXP_CATS=[
+{name:"ফুচকা",color:"#f97316",icon:"🍡",items:["আলু","তেঁতুল","ফুচকার ব্যাগ","শসা","গাজর"]},
+{name:"জুস",color:"#16a34a",icon:"🥤",items:["দই","লেবু","মাল্টা","চিনি","কলা","পুদিনা"]},
+{name:"বেতন",color:"#2563eb",icon:"💵",items:["ওবায়দুল","আপেল","আব্দুল্লাহ","বড় মা"]},
+{name:"অন্যান্য",color:"#8b5cf6",icon:"📦",items:["বিদ্যুৎ বিল","লাইট"]}
+];
+var EXP_CATS_OBJ=JSON.parse(localStorage.getItem("st_exp_cats")||JSON.stringify(DEFAULT_EXP_CATS));
+// backward compat: পুরনো data-তে items না থাকলে DEFAULT থেকে নেব
+EXP_CATS_OBJ.forEach(function(c,i){
+  if(!c.items){var def=DEFAULT_EXP_CATS.find(function(d){return d.name===c.name;});c.items=def?def.items.slice():[];}
+});
+var EXP_CATS=EXP_CATS_OBJ.map(function(x){return x.name;});
+var EXP_ICONS={};var EXP_COLORS={};var EXP_ITEMS={};
+EXP_CATS_OBJ.forEach(function(x){EXP_ICONS[x.name]=x.icon;EXP_COLORS[x.name]=x.color;EXP_ITEMS[x.name]=x.items||[];});
 
 // UTILS
 function n(v,f){f=f||0;var x=Number(v);return isFinite(x)?x:f;}
@@ -689,7 +655,7 @@ var selCat=CATS[0];
 var selRptType="monthly";
 
 // PANEL SWITCHING
-var panels=["home","sales","expense","baki","customer","menu","backup","report"];
+var panels=["home","sales","expense","baki","customer","menu","report"];
 function goPanel(p){
   panels.forEach(function(x){
     var pe=el("P_"+x); if(pe) pe.className="panel"+(x===p?" on":"");
@@ -705,7 +671,6 @@ function goPanel(p){
   if(p==="baki") renderBaki();
   if(p==="customer") renderCustomers();
   if(p==="menu") renderMenuEditor();
-  if(p==="backup") renderBackup();
   if(p==="report") renderReport();
   if(p==="sales"){renderCatPills();renderItemGrid();renderTodayOrders();}
 }
@@ -949,48 +914,113 @@ function renderTodayOrders(){
 }
 function delOrder(id){if(!confirm("অর্ডারটি মুছে ফেলবেন?"))return;ST.orders=ST.orders.filter(function(o){return o.id!==id;});save("orders");renderTodayOrders();updateHeader();}
 
-// EXPENSE
+// EXPENSE — sub-item based
+function saveExpCats(){localStorage.setItem("st_exp_cats",JSON.stringify(EXP_CATS_OBJ));}
+
+function reloadExpCats(){
+  EXP_CATS_OBJ=JSON.parse(localStorage.getItem("st_exp_cats")||JSON.stringify(DEFAULT_EXP_CATS));
+  EXP_CATS_OBJ.forEach(function(c){if(!c.items){var def=DEFAULT_EXP_CATS.find(function(d){return d.name===c.name;});c.items=def?def.items.slice():[];}});
+  EXP_CATS=EXP_CATS_OBJ.map(function(x){return x.name;});
+  EXP_ICONS={};EXP_COLORS={};EXP_ITEMS={};
+  EXP_CATS_OBJ.forEach(function(x){EXP_ICONS[x.name]=x.icon;EXP_COLORS[x.name]=x.color;EXP_ITEMS[x.name]=x.items||[];});
+}
+
+function expSubKey(cat,item){return cat+"__"+item;}
+
 function renderExpItems(){
   var td=el("EXP_DATE")?el("EXP_DATE").value||today():today();
   var curExps=ST.expenses.filter(function(e){return e.date===td;});
-  var total=0;
+  var grandTotal=0;
 
-  html("EXP_CARDS",EXP_CATS.map(function(cat){
-    var match=curExps.find(function(e){return e.cat===cat;});
-    var v=match?match.amt:0;
-    total+=n(v);
-    var col=EXP_COLORS[cat];
-    var ico=EXP_ICONS[cat];
-    return'<div class="card" style="border-left:5px solid '+col+';margin-bottom:12px">'+
+  html("EXP_CARDS",EXP_CATS_OBJ.map(function(catObj){
+    var cat=catObj.name;
+    var col=catObj.color;
+    var ico=catObj.icon;
+    var items=catObj.items||[];
+
+    // ক্যাটাগরির মোট হিসাব
+    var catTotal=curExps.filter(function(e){return e.cat===cat;}).reduce(function(s,e){return s+n(e.amt);},0);
+    grandTotal+=catTotal;
+
+    var itemRows=items.map(function(item){
+      var key=expSubKey(cat,item);
+      var match=curExps.find(function(e){return e.cat===cat && e.item===item;});
+      var v=match?match.amt:"";
+      return'<div class="exp-row" id="EXPROW_'+key+'">'+
+        '<span style="font-size:14px;font-weight:600;color:#475569">'+item+'</span>'+
+        '<div style="display:flex;align-items:center;gap:5px">'+
+          '<span style="color:#94a3b8;font-weight:700">৳</span>'+
+          '<input class="exp-inp" type="number" min="0" placeholder="০" value="'+(v||'')+'" '+
+            'oninput="saveExpSub(\''+cat+'\',\''+item+'\',this.value,\''+td+'\')" id="EXPINP_'+key+'">'+
+          '<button onclick="delExpSubItem(\''+cat+'\',\''+item+'\')" style="background:none;border:none;color:#dc2626;font-size:16px;padding:2px 4px;cursor:pointer">×</button>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+
+    var addRowId="EXPADDROW_"+cat;
+    return'<div class="card" style="border-left:5px solid '+col+';margin-bottom:12px" id="EXPCAT_'+cat+'">'+
       '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'+
         '<div style="display:flex;align-items:center;gap:9px">'+
-          '<span style="font-size:26px">'+ico+'</span>'+
+          '<span style="font-size:24px">'+ico+'</span>'+
           '<span style="font-size:17px;font-weight:700;color:'+col+'">'+cat+'</span>'+
         '</div>'+
+        '<span style="font-size:16px;font-weight:800;color:'+col+'">৳'+catTotal+'</span>'+
       '</div>'+
-      '<div style="display:flex;align-items:center;gap:10px">'+
-        '<span style="font-size:20px;font-weight:700;color:#94a3b8">৳</span>'+
-        '<input class="fi" id="EXP_INP_'+cat+'" style="margin:0;flex:1;font-size:20px;font-weight:700;color:'+col+'" '+
-          'type="number" min="0" placeholder="০" value="'+(v||'')+'" '+
-          'oninput="saveExpLive(\''+cat+'\',this.value,\''+td+'\')">'+
+      itemRows+
+      '<div id="'+addRowId+'" style="margin-top:6px">'+
+        '<div style="display:flex;gap:7px;margin-top:6px">'+
+          '<input class="fi" id="EXPNEW_'+cat+'" placeholder="নতুন আইটেম যোগ..." style="margin:0;flex:1;font-size:13px;padding:8px 10px" type="text">'+
+          '<button onclick="addExpSubItem(\''+cat+'\')" style="background:'+col+';color:#fff;border:none;border-radius:9px;padding:8px 13px;font-size:13px;font-weight:700;cursor:pointer">+ যোগ</button>'+
+        '</div>'+
       '</div>'+
     '</div>';
   }).join(''));
 
-  el("EXP_GT").textContent="৳"+total;
+  el("EXP_GT").textContent="৳"+grandTotal;
 }
-function saveExpLive(cat,val,date){
+
+function saveExpSub(cat,item,val,date){
   var td=date||today();
   var v=Math.max(0,n(val));
-  ST.expenses=ST.expenses.filter(function(e){return!(e.date===td && e.cat===cat);});
-  if(v>0)ST.expenses.push({date:td,cat:cat,grp:cat,amt:v});
+  // এই date+cat+item এর পুরনো entry সরাও
+  ST.expenses=ST.expenses.filter(function(e){
+    return!(e.date===td && e.cat===cat && e.item===item);
+  });
+  if(v>0) ST.expenses.push({date:td,cat:cat,item:item,amt:v});
   save("expenses");
-  // শুধু মোট আপডেট করি, পুরো re-render করি না (focus নষ্ট হয়)
+  // ক্যাটাগরি মোট আপডেট
   var td2=el("EXP_DATE")?el("EXP_DATE").value||today():today();
-  var cur=ST.expenses.filter(function(e){return e.date===td2;});
-  var tot=cur.reduce(function(s,e){return s+n(e.amt);},0);
-  el("EXP_GT").textContent="৳"+tot;
+  var catTotal=ST.expenses.filter(function(e){return e.date===td2 && e.cat===cat;}).reduce(function(s,e){return s+n(e.amt);},0);
+  var catEl=document.getElementById("EXPCAT_"+cat);
+  if(catEl){
+    var catTotEl=catEl.querySelector("span[style*='font-size:16px']");
+    if(catTotEl) catTotEl.textContent="৳"+catTotal;
+  }
+  var grandTot=ST.expenses.filter(function(e){return e.date===td2;}).reduce(function(s,e){return s+n(e.amt);},0);
+  el("EXP_GT").textContent="৳"+grandTot;
   updateHeader();
+}
+
+function addExpSubItem(cat){
+  var inp=el("EXPNEW_"+cat);
+  var name=inp?inp.value.trim():"";
+  if(!name){toast("আইটেমের নাম দিন!","err");return;}
+  var catObj=EXP_CATS_OBJ.find(function(c){return c.name===cat;});
+  if(!catObj)return;
+  if(catObj.items.indexOf(name)!==-1){toast("এই আইটেম আগেই আছে!","err");return;}
+  catObj.items.push(name);
+  saveExpCats();reloadExpCats();renderExpItems();
+  toast("✅ '"+name+"' যোগ হয়েছে");
+}
+
+function delExpSubItem(cat,item){
+  var catObj=EXP_CATS_OBJ.find(function(c){return c.name===cat;});
+  if(!catObj)return;
+  catObj.items=catObj.items.filter(function(i){return i!==item;});
+  saveExpCats();reloadExpCats();
+  // এই item এর expense data মুছি না (history থাকুক), শুধু UI থেকে সরাই
+  renderExpItems();
+  toast("'"+item+"' সরানো হয়েছে");
 }
 
 // BAKI
@@ -1336,9 +1366,13 @@ function gdFindFile(){
   }).then(function(r){return r.json();}).then(function(d){
     if(d.files && d.files.length>0){
       gdFileId=d.files[0].id;
-      // Restore data from Drive if localStorage is empty
-      var hasData=localStorage.getItem('sd4')||localStorage.getItem('sb4');
-      if(!hasData) gdRestore();
+      // সঠিক key দিয়ে check
+      var hasData=localStorage.getItem('st_ord')||localStorage.getItem('st_exp');
+      if(!hasData){
+        gdRestore();
+      } else {
+        gdSave();
+      }
     } else {
       gdSave();
     }
@@ -1348,18 +1382,23 @@ function gdFindFile(){
 function gdSave(){
   if(!gdToken || gdSyncing) return;
   gdSyncing=true;
+  // সঠিক localStorage keys
   var data={
-    sd4:localStorage.getItem('sd4')||'[]',
-    sb4:localStorage.getItem('sb4')||'[]',
-    si4:localStorage.getItem('si4')||'[]',
-    scr4:localStorage.getItem('scr4')||'[]',
+    st_ord:localStorage.getItem('st_ord')||'[]',
+    st_exp:localStorage.getItem('st_exp')||'[]',
+    st_bak:localStorage.getItem('st_bak')||'[]',
+    st_rat:localStorage.getItem('st_rat')||'[]',
+    st_tgt:localStorage.getItem('st_tgt')||'{}',
+    st_cus:localStorage.getItem('st_cus')||'[]',
+    st_menu:localStorage.getItem('st_menu')||'null',
+    st_cats:localStorage.getItem('st_cats')||'null',
+    st_exp_cats:localStorage.getItem('st_exp_cats')||'null',
     savedAt:new Date().toISOString()
   };
   var blob=new Blob([JSON.stringify(data)],{type:'application/json'});
   var meta={name:GD_FILE_NAME,parents:['appDataFolder']};
 
   if(gdFileId){
-    // Update existing
     var form=new FormData();
     form.append('metadata',new Blob([JSON.stringify({})],{type:'application/json'}));
     form.append('file',blob);
@@ -1367,7 +1406,6 @@ function gdSave(){
       method:'PATCH',headers:{Authorization:'Bearer '+gdToken},body:form
     }).then(function(){gdSyncing=false;}).catch(function(){gdSyncing=false;});
   } else {
-    // Create new
     var form=new FormData();
     form.append('metadata',new Blob([JSON.stringify(meta)],{type:'application/json'}));
     form.append('file',blob);
@@ -1384,14 +1422,24 @@ function gdRestore(){
   fetch('https://www.googleapis.com/drive/v3/files/'+gdFileId+'?alt=media',{
     headers:{Authorization:'Bearer '+gdToken}
   }).then(function(r){return r.json();}).then(function(d){
-    if(d.sd4) localStorage.setItem('sd4',d.sd4);
-    if(d.sb4) localStorage.setItem('sb4',d.sb4);
-    if(d.si4) localStorage.setItem('si4',d.si4);
-    if(d.scr4) localStorage.setItem('scr4',d.scr4);
+    // সঠিক keys দিয়ে restore
+    if(d.st_ord) localStorage.setItem('st_ord',d.st_ord);
+    if(d.st_exp) localStorage.setItem('st_exp',d.st_exp);
+    if(d.st_bak) localStorage.setItem('st_bak',d.st_bak);
+    if(d.st_rat) localStorage.setItem('st_rat',d.st_rat);
+    if(d.st_tgt) localStorage.setItem('st_tgt',d.st_tgt);
+    if(d.st_cus) localStorage.setItem('st_cus',d.st_cus);
+    if(d.st_menu && d.st_menu!=='null') localStorage.setItem('st_menu',d.st_menu);
+    if(d.st_cats && d.st_cats!=='null') localStorage.setItem('st_cats',d.st_cats);
+    if(d.st_exp_cats && d.st_exp_cats!=='null') localStorage.setItem('st_exp_cats',d.st_exp_cats);
+    // পুরনো format থেকে backward compat
+    if(!d.st_ord && d.sd4) localStorage.setItem('st_ord',d.sd4);
+    if(!d.st_bak && d.sb4) localStorage.setItem('st_bak',d.sb4);
     alert('✅ Google Drive থেকে data পুনরুদ্ধার হয়েছে!');
     location.reload();
   }).catch(function(){});
 }
+
 
 // Auto-save every 30 seconds if connected
 setInterval(function(){
@@ -1408,11 +1456,10 @@ if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').catch(function(){});
 }
 </script>
-
 <!-- Google Drive Sync Button -->
 <div id="gd_panel" style="position:fixed;bottom:90px;right:12px;z-index:999;text-align:right;">
-  <div id="gd_status" style="font-size:11px;color:#666;margin-bottom:4px;text-align:right;"></div>
-  <button id="gd_btn" onclick="gdToken?gdSave():gdLogin()" style="background:#2563eb;color:#fff;border:none;border-radius:20px;padding:8px 14px;font-size:13px;font-family:inherit;box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer;">☁️ Google Drive Sync</button>
+<div id="gd_status" style="font-size:11px;color:#666;margin-bottom:4px;text-align:right;"></div>
+<button id="gd_btn" onclick="gdToken?gdSave():gdLogin()" style="background:#2563eb;color:#fff;border:none;border-radius:20px;padding:8px 14px;font-size:13px;font-family:inherit;box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer;">☁️ Google Drive Sync</button>
 </div>
 </body>
-</html>
+  </html>
