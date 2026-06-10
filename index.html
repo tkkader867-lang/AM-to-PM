@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
@@ -7,9 +7,9 @@
 <meta name="theme-color" content="#0f2744">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="দোকান ট্র্যাকার">
 <link rel="manifest" href="manifest.json">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
 
@@ -1272,12 +1272,147 @@ function printReport(){window.print();}
 // INITIALIZATION ON LOAD
 window.onload=function(){
   goPanel("home");
+  gdInit();
 };
 
-// SERVICE WORKER REGISTRATION
+// ── GOOGLE DRIVE SYNC ──
+var GD_CLIENT_ID='389888470930-f6gnimvlluotegvc95741kcfcjpijsjp.apps.googleusercontent.com';
+var GD_FILE_NAME='dokan-tracker-backup.json';
+var GD_SCOPE='https://www.googleapis.com/auth/drive.appdata';
+var gdToken=null;
+var gdFileId=null;
+var gdSyncing=false;
+
+function gdInit(){
+  // Check stored token
+  var t=localStorage.getItem('gd_token');
+  var exp=localStorage.getItem('gd_token_exp');
+  if(t && exp && Date.now()<parseInt(exp)){
+    gdToken=t;
+    gdUpdateUI(true);
+    gdFindFile();
+  } else {
+    gdUpdateUI(false);
+  }
+}
+
+function gdUpdateUI(loggedIn){
+  var btn=document.getElementById('gd_btn');
+  var status=document.getElementById('gd_status');
+  if(!btn) return;
+  if(loggedIn){
+    btn.textContent='☁️ Google Drive সংযুক্ত';
+    btn.style.background='#16a34a';
+    if(status) status.textContent='✅ Auto-sync চালু আছে';
+  } else {
+    btn.textContent='☁️ Google Drive দিয়ে Sync করুন';
+    btn.style.background='#2563eb';
+    if(status) status.textContent='সংযুক্ত নেই';
+  }
+}
+
+function gdLogin(){
+  var client=google.accounts.oauth2.initTokenClient({
+    client_id:GD_CLIENT_ID,
+    scope:GD_SCOPE,
+    callback:function(resp){
+      if(resp.error) return alert('Login ব্যর্থ: '+resp.error);
+      gdToken=resp.access_token;
+      var exp=Date.now()+(resp.expires_in-60)*1000;
+      localStorage.setItem('gd_token',gdToken);
+      localStorage.setItem('gd_token_exp',exp.toString());
+      gdUpdateUI(true);
+      gdFindFile();
+      alert('✅ Google Drive সংযুক্ত হয়েছে! Data এখন থেকে auto-save হবে।');
+    }
+  });
+  client.requestAccessToken();
+}
+
+function gdFindFile(){
+  if(!gdToken) return;
+  fetch("https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name='"+GD_FILE_NAME+"'",{
+    headers:{Authorization:'Bearer '+gdToken}
+  }).then(function(r){return r.json();}).then(function(d){
+    if(d.files && d.files.length>0){
+      gdFileId=d.files[0].id;
+      // Restore data from Drive if localStorage is empty
+      var hasData=localStorage.getItem('sd4')||localStorage.getItem('sb4');
+      if(!hasData) gdRestore();
+    } else {
+      gdSave();
+    }
+  }).catch(function(){});
+}
+
+function gdSave(){
+  if(!gdToken || gdSyncing) return;
+  gdSyncing=true;
+  var data={
+    sd4:localStorage.getItem('sd4')||'[]',
+    sb4:localStorage.getItem('sb4')||'[]',
+    si4:localStorage.getItem('si4')||'[]',
+    scr4:localStorage.getItem('scr4')||'[]',
+    savedAt:new Date().toISOString()
+  };
+  var blob=new Blob([JSON.stringify(data)],{type:'application/json'});
+  var meta={name:GD_FILE_NAME,parents:['appDataFolder']};
+
+  if(gdFileId){
+    // Update existing
+    var form=new FormData();
+    form.append('metadata',new Blob([JSON.stringify({})],{type:'application/json'}));
+    form.append('file',blob);
+    fetch('https://www.googleapis.com/upload/drive/v3/files/'+gdFileId+'?uploadType=multipart',{
+      method:'PATCH',headers:{Authorization:'Bearer '+gdToken},body:form
+    }).then(function(){gdSyncing=false;}).catch(function(){gdSyncing=false;});
+  } else {
+    // Create new
+    var form=new FormData();
+    form.append('metadata',new Blob([JSON.stringify(meta)],{type:'application/json'}));
+    form.append('file',blob);
+    fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{
+      method:'POST',headers:{Authorization:'Bearer '+gdToken},body:form
+    }).then(function(r){return r.json();}).then(function(d){
+      gdFileId=d.id;gdSyncing=false;
+    }).catch(function(){gdSyncing=false;});
+  }
+}
+
+function gdRestore(){
+  if(!gdToken||!gdFileId) return;
+  fetch('https://www.googleapis.com/drive/v3/files/'+gdFileId+'?alt=media',{
+    headers:{Authorization:'Bearer '+gdToken}
+  }).then(function(r){return r.json();}).then(function(d){
+    if(d.sd4) localStorage.setItem('sd4',d.sd4);
+    if(d.sb4) localStorage.setItem('sb4',d.sb4);
+    if(d.si4) localStorage.setItem('si4',d.si4);
+    if(d.scr4) localStorage.setItem('scr4',d.scr4);
+    alert('✅ Google Drive থেকে data পুনরুদ্ধার হয়েছে!');
+    location.reload();
+  }).catch(function(){});
+}
+
+// Auto-save every 30 seconds if connected
+setInterval(function(){
+  if(gdToken) gdSave();
+},30000);
+
+// Save on page hide
+window.addEventListener('pagehide',function(){
+  if(gdToken) gdSave();
+});
+
+// Service Worker
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').catch(function(){});
 }
 </script>
+
+<!-- Google Drive Sync Button -->
+<div id="gd_panel" style="position:fixed;bottom:90px;right:12px;z-index:999;text-align:right;">
+  <div id="gd_status" style="font-size:11px;color:#666;margin-bottom:4px;text-align:right;"></div>
+  <button id="gd_btn" onclick="gdToken?gdSave():gdLogin()" style="background:#2563eb;color:#fff;border:none;border-radius:20px;padding:8px 14px;font-size:13px;font-family:inherit;box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer;">☁️ Google Drive Sync</button>
+</div>
 </body>
 </html>
