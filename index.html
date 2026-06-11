@@ -1,0 +1,1481 @@
+ <!DOCTYPE html>
+
+<html lang="bn">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport"/>
+<title>দোকান ট্র্যাকার</title>
+<meta content="#0f2744" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="দোকান ট্র্যাকার" name="apple-mobile-web-app-title"/>
+<link href="manifest.json" rel="manifest"/>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+
+:root{
+  --primary:#ea580c;
+  --primary-dark:#c2410c;
+  --primary-light:#fff7ed;
+  --accent:#f59e0b;
+  --navy:#1e3a5f;
+  --navy2:#2563eb;
+  --green:#16a34a;
+  --red:#dc2626;
+  --bg:#eef2f7;
+  --card:#ffffff;
+  --border:#e2e8f0;
+  --text:#0f1923;
+  --text2:#3d4f63;
+  --text3:#8fa3bc;
+  --shadow:0 2px 16px rgba(30,58,95,.07);
+  --shadow-lg:0 8px 36px rgba(30,58,95,.13);
+  --shadow-card:0 1px 3px rgba(0,0,0,.04),0 4px 16px rgba(30,58,95,.07);
+  --radius:18px;
+  --radius-sm:11px;
+  --transition:.18s cubic-bezier(.4,0,.2,1);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Hind Siliguri',Arial,sans-serif;
+  padding-bottom:84px;
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:contain;
+  touch-action:pan-x pan-y;
+}
+button{cursor:pointer;font-family:inherit;border:none;outline:none;transition:var(--transition)}
+input,textarea,select{font-family:inherit;outline:none;transition:var(--transition)}
+
+/* ── HEADER ── */
+.header{
+  background:linear-gradient(145deg,#0f2744 0%,#1a3a6e 45%,#c04a06 100%);
+  color:#fff;
+  padding:14px 16px 13px;
+  position:sticky;
+  top:0;
+  z-index:99;
+  box-shadow:0 4px 24px rgba(0,0,0,.22);
+}
+.h-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.h-title{font-size:21px;font-weight:800;letter-spacing:-0.2px;text-shadow:0 1px 6px rgba(0,0,0,.25)}
+.h-date{font-size:11.5px;opacity:.75;margin-top:2px;font-weight:400;letter-spacing:0.1px}
+.h-stats{display:flex;gap:10px;align-items:flex-start}
+.h-stat-box{background:rgba(255,255,255,.12);border-radius:10px;padding:5px 10px;text-align:right;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.1)}
+.h-stat-v{font-size:15px;font-weight:800;text-shadow:0 1px 3px rgba(0,0,0,.15)}
+.h-stat-l{font-size:10px;opacity:.7;font-weight:400;letter-spacing:0.2px}
+.prog{background:rgba(255,255,255,.2);border-radius:6px;height:6px;overflow:hidden}
+.prog-f{height:100%;background:linear-gradient(to right,#fde68a,#fff);border-radius:6px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.prog-t{font-size:11px;opacity:.75;margin-top:5px;text-align:right;font-weight:500}
+
+/* ── BOTTOM NAV ── */
+.bnav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(255,255,255,.97);
+  border-top:1px solid var(--border);
+  display:flex;z-index:99;
+  box-shadow:0 -4px 24px rgba(30,58,95,.1);
+  overflow-x:auto;
+  padding-bottom:env(safe-area-inset-bottom);
+  backdrop-filter:blur(12px);
+}
+.nb{
+  flex:0 0 auto;min-width:58px;
+  display:flex;flex-direction:column;align-items:center;
+  padding:8px 5px 6px;
+  background:none;color:var(--text3);
+  font-size:10.5px;font-weight:600;
+  border-top:3px solid transparent;
+  transition:all var(--transition);
+  position:relative;
+}
+.nb.on{color:var(--primary);border-top-color:var(--primary);background:linear-gradient(to bottom,rgba(234,88,12,.07),transparent)}
+.nb-i{font-size:21px;line-height:1.2;margin-bottom:1px}
+
+/* ── PANELS ── */
+.panel{display:none;padding:14px}
+.panel.on{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ── CARD ── */
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:16px;
+  margin-bottom:13px;
+  box-shadow:var(--shadow-card);
+  border:1px solid rgba(226,232,240,.7);
+}
+.ctitle{font-size:14.5px;font-weight:700;color:var(--text2);margin-bottom:12px;letter-spacing:0.1px}
+.rb{display:flex;justify-content:space-between;align-items:center}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+/* ── PILLS ── */
+.pills{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.pill{
+  padding:7px 15px;border-radius:22px;
+  border:2px solid var(--border);
+  background:#fff;color:var(--text2);
+  font-size:13.5px;font-weight:600;
+  white-space:nowrap;transition:all var(--transition);
+  box-shadow:0 1px 3px rgba(0,0,0,.04);
+}
+.pill.on{color:#fff;border-color:transparent;box-shadow:0 3px 10px rgba(0,0,0,.15)}
+.pill:active{transform:scale(.95)}
+
+/* ── ITEM GRID ── */
+.igrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:13px}
+.icard{
+  background:#fff;border:2px solid var(--border);
+  border-radius:15px;padding:13px;
+  box-shadow:0 2px 8px rgba(30,58,95,.05);
+  transition:border-color var(--transition),box-shadow var(--transition),transform .12s;
+}
+.icard.active{border-color:var(--primary);box-shadow:0 3px 12px rgba(234,88,12,.18)}
+.icard:active{transform:scale(.97)}
+.iname{font-size:13.5px;font-weight:700;color:var(--text);line-height:1.35;margin-bottom:3px}
+.iprice{font-size:13.5px;font-weight:700}
+.qrow{display:flex;align-items:center;gap:7px;margin-top:9px}
+.qb{
+  width:32px;height:32px;border-radius:9px;
+  font-size:18px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .1s,background var(--transition);
+}
+.qb:active{transform:scale(.85)}
+.qm{background:#f1f5f9;color:#475569}
+.qm:hover{background:#e2e8f0}
+.qp{color:#fff}
+.qp:hover{filter:brightness(1.1)}
+.qn{min-width:24px;text-align:center;font-weight:800;font-size:17px;color:var(--text)}
+.isub{font-size:11px;color:var(--green);margin-top:4px;font-weight:600}
+
+/* ── FORMS ── */
+.fi{
+  width:100%;background:#f8fafc;
+  border:2px solid var(--border);
+  border-radius:11px;padding:12px 14px;
+  color:var(--text);font-size:15px;margin-bottom:9px;
+  transition:border-color var(--transition),background var(--transition),box-shadow var(--transition);
+}
+.fi:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 4px rgba(234,88,12,.08)}
+.fta{
+  width:100%;background:#f8fafc;
+  border:2px solid var(--border);
+  border-radius:11px;padding:12px 14px;
+  color:var(--text);font-size:15px;margin-bottom:9px;
+  min-height:70px;resize:vertical;
+  transition:border-color var(--transition),background var(--transition);
+}
+.fta:focus{border-color:var(--primary);background:#fff}
+.si{
+  background:#f8fafc;border:2px solid var(--border);
+  border-radius:9px;padding:7px 11px;
+  color:var(--text);font-size:14px;
+  transition:border-color var(--transition);
+}
+.si:focus{border-color:var(--primary)}
+
+/* ── BUTTONS ── */
+.bp{
+  width:100%;padding:14px;
+  background:linear-gradient(135deg,#ea580c,#f59e0b);
+  border-radius:13px;color:#fff;
+  font-weight:700;font-size:15px;margin-top:5px;
+  box-shadow:0 4px 18px rgba(234,88,12,.35);
+  transition:transform var(--transition),box-shadow var(--transition),filter var(--transition);
+  letter-spacing:0.3px;
+}
+.bp:active{transform:scale(.97);box-shadow:0 2px 8px rgba(234,88,12,.2)}
+.bp:hover{filter:brightness(1.05)}
+.bg{padding:7px 14px;background:#dcfce7;border-radius:9px;color:#16a34a;font-size:13px;font-weight:700;transition:all var(--transition)}
+.bg:active{transform:scale(.95);background:#bbf7d0}
+.br{padding:7px 11px;background:#fee2e2;border-radius:9px;color:#dc2626;font-size:13px;font-weight:600;transition:all var(--transition)}
+.br:active{transform:scale(.95);background:#fecaca}
+.bb{padding:7px 14px;background:#dbeafe;border-radius:9px;color:#1d4ed8;font-size:13px;font-weight:700;transition:all var(--transition)}
+.bb:active{transform:scale(.95)}
+.bgr{padding:7px 11px;background:#f1f5f9;border-radius:9px;color:#64748b;font-size:13px;transition:all var(--transition)}
+
+/* ── TABLE ROWS ── */
+.srow{
+  display:flex;justify-content:space-between;
+  padding:9px 0;font-size:14px;
+  border-bottom:1px solid #f0f4f8;
+}
+.srow:last-child{border-bottom:none}
+.div{height:1px;background:#f0f4f8;margin:10px 0}
+
+/* ── STAT GRIDS ── */
+.sg2{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px}
+.sg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:14px}
+.sc{
+  background:#fff;border-radius:15px;
+  padding:15px 10px;text-align:center;
+  box-shadow:var(--shadow-card);
+  border:1px solid rgba(226,232,240,.8);
+  transition:transform var(--transition),box-shadow var(--transition);
+}
+.sc:active{transform:scale(.97)}
+.sv{font-size:21px;font-weight:800;letter-spacing:-0.5px}
+.sl{font-size:11.5px;color:var(--text3);margin-top:4px;font-weight:600;letter-spacing:0.2px}
+
+/* ── CHART ── */
+.bchart{display:flex;align-items:flex-end;gap:4px;height:120px;overflow-x:auto;padding-bottom:24px;padding-top:8px}
+.bc{display:flex;flex-direction:column;align-items:center;flex:0 0 auto;min-width:30px}
+.bb2{width:22px;border-radius:4px 4px 0 0;background:linear-gradient(to top,#ea580c,#f59e0b)}
+.bl{font-size:9px;color:var(--text3);margin-top:3px;transform:rotate(-40deg);white-space:nowrap}
+
+/* ── INSIGHT ── */
+.ins{
+  background:linear-gradient(135deg,#1e3a5f,#2563eb);
+  color:#fff;border-radius:var(--radius);
+  padding:15px;margin-bottom:11px;
+  box-shadow:0 4px 16px rgba(30,58,95,.25);
+}
+.ins-t{font-size:12px;opacity:.8;margin-bottom:4px;font-weight:500}
+.ins-b{font-size:15px;font-weight:700}
+
+/* ── MISC ── */
+.empty{text-align:center;color:var(--text3);padding:28px;font-size:14px}
+.fade{opacity:.55}
+.strike{text-decoration:line-through}
+.gc{color:var(--green)}.rc{color:var(--red)}.oc{color:var(--primary)}.bc2{color:var(--navy2)}.gray{color:var(--text3)}
+.fw7{font-weight:700}.fs11{font-size:13px}.fs12{font-size:14px}.fs13{font-size:15px}.mt7{margin-top:8px}
+.hm{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:7px}
+.hmc{border-radius:3px;height:15px}
+.hmlb{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px}
+.hmlbl{font-size:10px;color:var(--text3);text-align:center}
+.pi-wrap{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.pi-leg{display:flex;flex-direction:column;gap:6px;flex:1;min-width:120px}
+.pi-li{display:flex;align-items:center;gap:6px;font-size:13px}
+.pi-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.time-row{display:flex;gap:6px;margin-bottom:12px}
+.tp{
+  flex:1;padding:8px 3px;border-radius:11px;
+  border:2px solid var(--border);background:#fff;
+  color:var(--text2);font-size:12px;font-weight:700;
+  text-align:center;transition:all .2s;
+}
+.tp.on{background:#1e3a5f;color:#fff;border-color:#1e3a5f;box-shadow:0 2px 8px rgba(30,58,95,.25)}
+.exp-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid #f0f4f8;
+}
+.acc-header{
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;user-select:none;padding:2px 0;
+  -webkit-tap-highlight-color:transparent;
+}
+.acc-header:active{opacity:.8}
+.acc-arrow{
+  font-size:13px;color:#94a3b8;transition:transform .25s cubic-bezier(.4,0,.2,1);
+  margin-left:6px;flex-shrink:0;
+}
+.acc-arrow.open{transform:rotate(180deg)}
+.acc-body{
+  overflow:hidden;
+  max-height:0;
+  transition:max-height .3s cubic-bezier(.4,0,.2,1),opacity .25s;
+  opacity:0;
+}
+.acc-body.open{max-height:1000px;opacity:1}
+.exp-inp{
+  width:85px;background:#f8fafc;border:2px solid var(--border);
+  border-radius:9px;padding:5px 9px;font-size:14px;
+  text-align:right;color:var(--text);
+  transition:border-color .2s;
+}
+.exp-inp:focus{border-color:var(--primary)}
+.pay-item{background:#f0fdf4;border-radius:11px;padding:10px;margin-bottom:6px;font-size:13px}
+.ord-item{
+  background:#f8fafc;border-radius:13px;padding:12px;margin-bottom:9px;
+  border:1px solid var(--border);
+  transition:box-shadow var(--transition);
+}
+.ord-item:hover{box-shadow:var(--shadow-card)}
+.banner-warn{background:#fff7ed;border:2px solid #fed7aa;border-radius:14px;padding:13px;margin-bottom:11px}
+.banner-red{background:#fef2f2;border:2px solid #fca5a5;border-radius:14px;padding:13px;margin-bottom:11px}
+.cus-card{
+  background:#fff;border-radius:14px;padding:14px;
+  margin-bottom:10px;border-left:4px solid var(--primary);
+  box-shadow:var(--shadow-card);
+  border-top:1px solid var(--border);
+  border-right:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  transition:box-shadow var(--transition),transform var(--transition);
+}
+.cus-card:active{transform:scale(.99)}
+@media print{.bnav,.header{display:none!important}.panel{display:block!important}}
+
+/* ── MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:flex;align-items:flex-end}
+.modal-box{
+  background:#fff;border-radius:20px 20px 0 0;
+  padding:20px;width:100%;max-height:85vh;overflow-y:auto;
+  box-shadow:0 -8px 32px rgba(0,0,0,.15);
+}
+.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.modal-title{font-size:17px;font-weight:800;color:var(--text)}
+.modal-close{
+  width:34px;height:34px;border-radius:50%;
+  background:#f1f5f9;color:#64748b;font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;border:none;
+}
+
+/* ── COMPARISON CHART ── */
+.cmp-bar-wrap{display:flex;align-items:flex-end;gap:8px;height:130px;padding-bottom:26px;padding-top:10px;overflow-x:auto}
+.cmp-col{display:flex;flex-direction:column;align-items:center;flex:0 0 auto;min-width:46px;gap:3px}
+.cmp-bars{display:flex;align-items:flex-end;gap:3px;height:95px}
+.cmp-b{width:16px;border-radius:4px 4px 0 0}
+.cmp-lbl{font-size:10px;color:var(--text3);white-space:nowrap}
+
+/* ── PROFIT TABLE ── */
+.pt-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:9px 0;border-bottom:1px solid #f0f4f8;font-size:14px;
+}
+.pt-bar-wrap{background:#f1f5f9;border-radius:4px;height:6px;overflow:hidden;margin-top:4px}
+.pt-bar{height:100%;border-radius:4px}
+.profit-badge{padding:3px 9px;border-radius:12px;font-size:12px;font-weight:700}
+
+/* ── EXTRA POLISH ── */
+.card:hover{box-shadow:0 4px 24px rgba(30,58,95,.11)}
+input::placeholder{color:#b4c0ce}
+textarea::placeholder{color:#b4c0ce}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#c8d2de;border-radius:4px}
+</style>
+</head>
+<body>
+<div class="header">
+<div class="h-top">
+<div>
+<div class="h-title">🏪 আমার দোকান</div>
+<div class="h-date" id="H_DATE"></div>
+</div>
+<div class="h-stats">
+<div class="h-stat-box">
+<div class="h-stat-v" id="H_SALES">৳0</div>
+<div class="h-stat-l">বিক্রয়</div>
+</div>
+<div class="h-stat-box">
+<div class="h-stat-v" id="H_EXP">৳0</div>
+<div class="h-stat-l">খরচ</div>
+</div>
+<div class="h-stat-box">
+<div class="h-stat-v" id="H_PROFIT">৳0</div>
+<div class="h-stat-l">লাভ</div>
+</div>
+</div>
+</div>
+<div class="prog"><div class="prog-f" id="H_PROG" style="width:0%"></div></div>
+<div class="prog-t" id="H_PROGT">লক্ষ্য ৳1000 — 0% সম্পন্ন</div>
+</div>
+<div class="bnav">
+<button class="nb on" onclick="goPanel('home')"><span class="nb-i">🏠</span>হোম</button>
+<button class="nb" onclick="goPanel('sales')"><span class="nb-i">🛒</span>বিক্রয়</button>
+<button class="nb" onclick="goPanel('expense')"><span class="nb-i">💸</span>খরচ</button>
+<button class="nb" onclick="goPanel('baki')"><span class="nb-i">📋</span>বাকি</button>
+
+<button class="nb" onclick="goPanel('menu')"><span class="nb-i">✏️</span>মেনু</button>
+
+<button class="nb" onclick="goPanel('report')"><span class="nb-i">📊</span>রিপোর্ট</button>
+</div>
+<div class="panel on" id="P_home">
+<div class="card">
+<div class="rb" style="margin-bottom:7px">
+<span class="ctitle" style="margin:0">🎯 আজকের লক্ষ্য</span>
+<div class="row" id="TD_DISP">
+<span class="fw7 oc" id="TD_VAL">৳1000</span>
+<button class="bgr" onclick="tdEdit(1)">✏️</button>
+</div>
+<div class="row" id="TD_EDIT" style="display:none">
+<input class="si" id="TD_INP" style="width:85px" type="number" value="1000"/>
+<button class="bg" onclick="tdSave()">✓</button>
+<button class="bgr" onclick="tdEdit(0)">✕</button>
+</div>
+</div>
+<div id="HOME_PROG"></div>
+</div>
+<div class="sg2" id="HOME_KPI"></div>
+<div id="HOME_INS"></div>
+<div class="card">
+<div class="ctitle">🏆 আজকের টপ আইটেম</div>
+<div id="HOME_TOP"></div>
+</div>
+
+</div>
+<div class="panel" id="P_sales">
+<div class="card">
+<div class="ctitle">⏰ বিক্রয়ের সময়</div>
+<div class="time-row" id="TIME_PILLS"></div>
+</div>
+<div class="pills" id="CAT_PILLS"></div>
+<div class="igrid" id="ITEM_GRID"></div>
+<div class="card">
+<div class="ctitle">💰 ডিসকাউন্ট</div>
+<div class="row">
+<span class="fs12">ছাড়:</span>
+<input class="si" id="DISC" max="100" min="0" style="width:65px" type="number" value="0"/> %
+    </div>
+</div>
+<div id="ORD_SUM"></div>
+<button class="bp" onclick="saveOrder()">✅ অর্ডার সেভ করুন</button>
+<div class="card" style="margin-top:11px">
+<div class="ctitle">📦 আজকের অর্ডার</div>
+<div id="TODAY_ORDS"></div>
+</div>
+</div>
+<div class="panel" id="P_expense">
+<div class="card">
+<div class="ctitle">📅 তারিখ</div>
+<input class="fi" id="EXP_DATE" onchange="renderExpItems()" style="margin:0" type="date"/>
+</div>
+<div id="EXP_CARDS"></div>
+<div class="card" style="background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;border:none">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<span style="font-size:16px;font-weight:700">💰 মোট খরচ</span>
+<span id="EXP_GT" style="font-size:24px;font-weight:800">৳0</span>
+</div>
+</div>
+</div>
+<div class="panel" id="P_baki">
+<div class="card">
+<div class="ctitle">➕ নতুন বাকি</div>
+<input class="fi" id="BK_NAME" placeholder="গ্রাহকের নাম *" type="text"/>
+<input class="fi" id="BK_PHONE" placeholder="ফোন নম্বর" type="tel"/>
+<input class="fi" id="BK_AMT" min="0" placeholder="পরিমাণ (টাকা) *" type="number"/>
+<input class="fi" id="BK_DUE" placeholder="পরিশোধের তারিখ" type="date"/>
+<input class="fi" id="BK_NOTE" placeholder="নোট" type="text"/>
+<button class="bp" onclick="addBaki()">যোগ করুন</button>
+</div>
+<div id="BK_OVR"></div>
+<div id="BK_UNBN"></div>
+<div id="BK_LIST"></div>
+</div>
+
+<div class="panel" id="P_menu">
+<div class="card">
+<div class="ctitle">📂 ক্যাটাগরি ম্যানেজমেন্ট</div>
+<div id="CAT_MGMT_LIST"></div>
+<div class="div"></div>
+<div class="row" style="margin-top:4px">
+<input class="fi" id="NEW_CAT_NAME" placeholder="নতুন ক্যাটাগরি নাম" style="margin:0;flex:1" type="text"/>
+<input id="NEW_CAT_COLOR" style="width:36px;height:36px;border:none;border-radius:7px;cursor:pointer;padding:2px" type="color" value="#ea580c"/>
+<button class="bp" onclick="addCategory()" style="margin:0;width:auto;padding:9px 14px">+ যোগ</button>
+</div>
+</div>
+<div class="card">
+<div class="ctitle">➕ নতুন আইটেম যোগ করুন</div>
+<select class="fi" id="NEW_ITEM_CAT">
+</select>
+<input class="fi" id="NEW_ITEM_NAME" placeholder="আইটেমের নাম *" type="text"/>
+<input class="fi" id="NEW_ITEM_PRICE" min="1" placeholder="মূল্য (৳) *" type="number"/>
+<button class="bp" onclick="addMenuItem()">✅ আইটেম যোগ করুন</button>
+</div>
+<div class="card">
+<div class="rb" style="margin-bottom:9px">
+<span class="ctitle" style="margin:0">📋 বিদ্যমান মেনু</span>
+<span class="fs11 gray" id="MENU_COUNT"></span>
+</div>
+<div class="pills" id="MENU_CAT_FILTER"></div>
+<div id="MENU_EDIT_LIST"></div>
+</div>
+</div>
+
+<div class="panel" id="P_report">
+<div class="pills" id="RPT_TYPE"></div>
+<div class="card">
+<div class="rb">
+<span class="ctitle" style="margin:0">📅 সময়কাল</span>
+<div class="row">
+<input class="si" id="RPT_MON" onchange="renderReport()" type="month"/>
+<button class="bb" onclick="printReport()" style="padding:5px 10px;font-size:12px">🖨️ প্রিন্ট</button>
+</div>
+</div>
+</div>
+<div class="sg3" id="RPT_KPI"></div>
+<div class="card">
+<div class="ctitle" id="RPT_CTITLE">📈 বিক্রয় চার্ট</div>
+<div id="RPT_CHART"></div>
+</div>
+<div class="card">
+<div class="ctitle">🍕 ক্যাটাগরি অনুযায়ী</div>
+<div id="RPT_CAT"></div>
+</div>
+<div class="card">
+<div class="ctitle">⏰ সময় অনুযায়ী বিক্রয়</div>
+<div id="RPT_TIME"></div>
+</div>
+<div class="card">
+<div class="ctitle">📅 গত ৭ দিন</div>
+<div id="RPT_WEEK"></div>
+</div>
+<div class="card">
+<div class="ctitle">🏆 টপ ও লোয়েস্ট আইটেম</div>
+<div id="RPT_PROD"></div>
+</div>
+<div class="card">
+<div class="ctitle">🔥 বিক্রয় হিটম্যাপ (গত ২৮ দিন)</div>
+<div id="RPT_HM"></div>
+</div>
+<div class="card">
+<div class="ctitle">🎯 লক্ষ্য বনাম অর্জন</div>
+<div id="RPT_TGT"></div>
+</div>
+<div class="card" id="RPT_CMP_CARD" style="display:none">
+<div class="rb" style="margin-bottom:9px">
+<span class="ctitle" style="margin:0">📊 মাসিক তুলনা</span>
+<span class="fs11 gray">এই মাস vs গত মাস</span>
+</div>
+<div id="RPT_CMP"></div>
+</div>
+<div class="card" id="RPT_PROFIT_CARD">
+<div class="rb" style="margin-bottom:9px">
+<span class="ctitle" style="margin:0">💰 আইটেম-ওয়াইজ রাজস্ব</span>
+<span class="fs11 gray" id="RPT_PROFIT_PERIOD"></span>
+</div>
+<div id="RPT_PROFIT"></div>
+</div>
+</div>
+
+<script>
+// CONSTANTS
+var DEFAULT_MENU=[
+  {id:"f1",cat:"ফুচকা",name:"ফুচকা",price:60},
+  {id:"f2",cat:"ফুচকা",name:"হাফ ফুচকা",price:30},
+  {id:"f3",cat:"ফুচকা",name:"চটপটি",price:30},
+  {id:"f4",cat:"ফুচকা",name:"দই ফুচকা",price:130},
+  {id:"k1",cat:"কফি",name:"Black coffee",price:20},
+  {id:"k2",cat:"কফি",name:"Milk coffee",price:30},
+  {id:"k3",cat:"কফি",name:"Foam coffee",price:50},
+  {id:"k4",cat:"কফি",name:"Cold coffee",price:70},
+  {id:"k5",cat:"কফি",name:"Chocolate cold coffee",price:80},
+  {id:"j1",cat:"জুস",name:"Mint",price:30},
+  {id:"j2",cat:"জুস",name:"Lassi",price:40},
+  {id:"j3",cat:"জুস",name:"Special Lassi",price:50},
+  {id:"j4",cat:"জুস",name:"Malta Juice",price:50},
+  {id:"j5",cat:"জুস",name:"Lemonade",price:20},
+  {id:"j6",cat:"জুস",name:"Water",price:20},
+  {id:"m1",cat:"মিল্কশেক",name:"Mango",price:80},
+  {id:"m2",cat:"মিল্কশেক",name:"Orange",price:80},
+  {id:"m3",cat:"মিল্কশেক",name:"Vanilla",price:70},
+  {id:"m4",cat:"মিল্কশেক",name:"Chocolate",price:100},
+  {id:"m5",cat:"মিল্কশেক",name:"Banana",price:50},
+  {id:"m6",cat:"মিল্কশেক",name:"Oreo",price:100},
+  {id:"m7",cat:"মিল্কশেক",name:"KitKat",price:120}
+];
+var DEFAULT_CATS=[
+  {name:"ফুচকা",color:"#f97316"},
+  {name:"কফি",color:"#92400e"},
+  {name:"জুস",color:"#16a34a"},
+  {name:"মিল্কশেক",color:"#7c3aed"}
+];
+
+var MENU=[];
+var CATS_OBJ=[];
+var CATS=[];
+var CC={};
+
+function reloadMenuData(){
+  try{var s=localStorage.getItem("st_menu");MENU=s?JSON.parse(s):DEFAULT_MENU.slice();}catch(e){MENU=DEFAULT_MENU.slice();}
+  try{var s=localStorage.getItem("st_cats");CATS_OBJ=s?JSON.parse(s):DEFAULT_CATS.slice();}catch(e){CATS_OBJ=DEFAULT_CATS.slice();}
+  CATS=CATS_OBJ.map(function(c){return c.name;});
+  CC={};CATS_OBJ.forEach(function(c){CC[c.name]=c.color;});
+  MBI={};MENU.forEach(function(m){MBI[m.id]=m;});
+}
+reloadMenuData();
+
+var TIMES=["সকাল","দুপুর","বিকাল","রাত"];
+var TC={সকাল:"#f59e0b",দুপুর:"#f97316",বিকাল:"#06b6d4",রাত:"#8b5cf6"};
+
+var DEFAULT_EXP_CATS=[
+{name:"ফুচকা",color:"#f97316",icon:"🍡",items:["আলু","তেঁতুল","ফুচকার ব্যাগ","শসা","গাজর"]},
+{name:"জুস",color:"#16a34a",icon:"🥤",items:["দই","লেবু","মাল্টা","চিনি","কলা","পুদিনা"]},
+{name:"বেতন",color:"#2563eb",icon:"💵",items:["ওবায়দুল","আপেল","আব্দুল্লাহ","বড় মা"]},
+{name:"অন্যান্য",color:"#8b5cf6",icon:"📦",items:["বিদ্যুৎ বিল","লাইট"]}
+];
+var EXP_CATS_OBJ=JSON.parse(localStorage.getItem("st_exp_cats")||JSON.stringify(DEFAULT_EXP_CATS));
+// backward compat: পুরনো data-তে items না থাকলে DEFAULT থেকে নেব
+EXP_CATS_OBJ.forEach(function(c,i){
+  if(!c.items){var def=DEFAULT_EXP_CATS.find(function(d){return d.name===c.name;});c.items=def?def.items.slice():[];}
+});
+var EXP_CATS=EXP_CATS_OBJ.map(function(x){return x.name;});
+var EXP_ICONS={};var EXP_COLORS={};var EXP_ITEMS={};
+EXP_CATS_OBJ.forEach(function(x){EXP_ICONS[x.name]=x.icon;EXP_COLORS[x.name]=x.color;EXP_ITEMS[x.name]=x.items||[];});
+
+// UTILS
+function n(v,f){f=f||0;var x=Number(v);return isFinite(x)?x:f;}
+function s(v,f){f=f||"";return typeof v==="string"?v:f;}
+function a(v){return Array.isArray(v)?v:[];}
+function today(){return new Date().toISOString().slice(0,10);}
+function thisMonth(){return new Date().toISOString().slice(0,7);}
+
+function lsGet(k,d){
+  try{var r=localStorage.getItem(k);return r===null?d:JSON.parse(r);}catch(e){return d;}
+}
+function lsSet(k,v){
+  try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}
+}
+
+function el(id){return document.getElementById(id);}
+function html(id,h){var e=el(id);if(e)e.innerHTML=h;}
+
+// STATE
+var ST={
+  orders: lsGet("st_ord",[]),
+  expenses: lsGet("st_exp",[]),
+  baki: lsGet("st_bak",[]),
+  ratings: lsGet("st_rat",[]),
+  targets: lsGet("st_tgt",{}),
+
+};
+function save(k){lsSet("st_"+k,ST[k]);}
+
+var CUR={items:{},time:"সকাল"};
+var selCat=CATS[0];
+
+var selRptType="monthly";
+
+// PANEL SWITCHING
+var panels=["home","sales","expense","baki","menu","report"];
+function goPanel(p){
+  panels.forEach(function(x){
+    var pe=el("P_"+x); if(pe) pe.className="panel"+(x===p?" on":"");
+  });
+  document.querySelectorAll(".nb").forEach(function(b,i){
+    b.className="nb"+(panels[i]===p?" on":"");
+  });
+  if(p==="home") renderHome();
+  if(p==="expense"){
+    var expD=el("EXP_DATE");if(expD && !expD.value)expD.value=today();
+    renderExpItems();
+  }
+  if(p==="baki") renderBaki();
+
+  if(p==="menu") renderMenuEditor();
+  if(p==="report") renderReport();
+  if(p==="sales"){renderCatPills();renderItemGrid();renderTodayOrders();}
+}
+
+// TOAST
+function toast(msg,type){
+  var t=document.createElement("div");
+  t.style.cssText="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:9999;"+
+    "background:"+(type==="err"?"#dc2626":"#16a34a")+";color:#fff;padding:12px 20px;border-radius:12px;"+
+    "font-size:14px;font-weight:700;box-shadow:0 4px 20px rgba(0,0,0,.25);"+
+    "animation:fadeIn .2s ease;max-width:88vw;text-align:center;";
+  t.textContent=msg;document.body.appendChild(t);
+  setTimeout(function(){t.style.opacity="0";t.style.transition="opacity .3s";setTimeout(function(){t.remove();},320);},2400);
+}
+
+// HEADER
+function updateHeader(){
+  var td=today();
+  var ords=ST.orders.filter(function(o){return o.date===td;});
+  var sales=ords.reduce(function(s,o){return s+n(o.total);},0);
+  var exp=ST.expenses.filter(function(e){return e.date===td;}).reduce(function(s,e){return s+n(e.amt);},0);
+  var profit=sales-exp;
+  var tgt=n((ST.targets[td]||{}).daily,1000)||1000;
+  var pct=Math.min(100,Math.round(sales/tgt*100));
+  el("H_SALES").textContent="৳"+sales;
+  el("H_EXP").textContent="৳"+exp;
+  var pe=el("H_PROFIT");
+  pe.textContent="৳"+profit;
+  pe.style.color=profit>=0?"#fff":"#fca5a5";
+  el("H_PROG").style.width=pct+"%";
+  el("H_PROGT").textContent="লক্ষ্য ৳"+tgt+" — "+pct+"% সম্পন্ন";
+  el("TD_VAL").textContent="৳"+tgt;
+  el("TD_INP").value=tgt;
+}
+
+(function(){
+  try {
+    el("H_DATE").textContent=new Date().toLocaleDateString("bn-BD",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+  } catch(e) { el("H_DATE").textContent=today(); }
+})();
+
+// TARGET
+function tdEdit(show){
+  el("TD_DISP").style.display=show?"none":"flex";
+  el("TD_EDIT").style.display=show?"flex":"none";
+}
+function tdSave(){
+  var td=today();
+  var v=Math.max(1,n(el("TD_INP").value,1000));
+  if(!ST.targets[td])ST.targets[td]={};
+  ST.targets[td].daily=v;
+  save("targets");
+  tdEdit(0);
+  updateHeader();
+  renderHome();
+}
+
+// HOME
+function renderHome(){
+  var td=today();
+  var ords=ST.orders.filter(function(o){return o.date===td;});
+  var sales=ords.reduce(function(s,o){return s+n(o.total);},0);
+  var exp=ST.expenses.filter(function(e){return e.date===td;}).reduce(function(s,e){return s+n(e.amt);},0);
+  var profit=sales-exp;
+  var cnt=ords.length;
+  var tgt=n((ST.targets[td]||{}).daily,1000)||1000;
+  var pct=Math.min(100,Math.round(sales/tgt*100));
+
+  html("HOME_PROG",
+    '<div style="background:#f8fafc;border-radius:7px;padding:9px">'+
+    '<div class="rb" style="margin-bottom:6px"><span class="fs12 gray">অর্জিত</span><span class="fw7 oc">৳'+sales+' / ৳'+tgt+'</span></div>'+
+    '<div style="background:#e2e8f0;border-radius:3px;height:7px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:linear-gradient(to right,#ea580c,#f59e0b);border-radius:3px"></div></div>'+
+    '<div class="rb mt7"><span class="fs11 gray">'+pct+'% সম্পন্ন</span><span class="fs11 '+(pct>=100?'gc':'gray')+'">'+(pct>=100?'🎉 লক্ষ্য পূরণ!':'আর ৳'+(tgt-sales)+' বাকি')+'</span></div>'+
+    '</div>');
+
+  html("HOME_KPI", 
+    '<div class="sc"><div class="sv gc">৳'+sales+'</div><div class="sl">বিক্রয়</div></div>'+
+    '<div class="sc"><div class="sv rc">৳'+exp+'</div><div class="sl">খরচ</div></div>'+
+    '<div class="sc"><div class="sv" style="color:'+(profit>=0?'#ea580c':'#dc2626')+'">৳'+profit+'</div><div class="sl">লাভ</div></div>'+
+    '<div class="sc"><div class="sv bc2">'+cnt+'</div><div class="sl">অর্ডার</div></div>');
+
+  renderInsights();
+
+  var ic={};
+  ords.forEach(function(o){a(o.items).forEach(function(it){ic[it.id]=(ic[it.id]||0)+n(it.qty);});});
+  var top=Object.keys(ic).map(function(id){return{item:MBI[id],qty:ic[id]};})
+    .filter(function(e){return e.item;}).sort(function(a,b){return b.qty-a.qty;}).slice(0,3);
+
+  html("HOME_TOP",top.length?top.map(function(e,i){
+    return'<div class="srow"><span>'+["🥇","🥈","🥉"][i]+' '+e.item.name+'</span><span style="color:'+CC[e.item.cat]+'">'+e.qty+' পিস</span></div>';
+  }).join(''):'<div class="empty">এখনো বিক্রয় নেই</div>');
+
+  updateHeader();
+}
+
+function renderInsights(){
+  var td=today();
+  var ords=ST.orders.filter(function(o){return o.date===td;});
+  var sales=ords.reduce(function(s,o){return s+n(o.total);},0);
+  var exp=ST.expenses.filter(function(e){return e.date===td;}).reduce(function(s,e){return s+n(e.amt);},0);
+  var profit=sales-exp;
+
+  var msg="👋 স্বাগতম! আজকের বেচাকেনা শুরু করুন।";
+  if(sales>0 && profit>0) msg="🚀 দারুণ! আজ আপনার নিট লাভ ৳"+profit;
+  else if(sales>0 && profit<=0) msg="⚠️ আপনার খরচ বিক্রয়ের চেয়ে বেশি বা সমান। খরচ নিয়ন্ত্রণে রাখুন।";
+
+  html("HOME_INS",'<div class="ins"><div class="ins-t">💡 এআই ইনসাইট</div><div class="ins-b">'+msg+'</div></div>');
+}
+
+// SALES & ORDER
+function renderCatPills(){
+  html("CAT_PILLS",CATS.map(function(c){
+    var on=c===selCat;
+    return'<button class="pill'+(on?' on':'')+'" style="'+(on?'background:'+CC[c]:'')+'" onclick="setCat(\''+c+'\')">'+c+'</button>';
+  }).join(''));
+}
+function setCat(c){selCat=c;renderCatPills();renderItemGrid();}
+
+function renderItemGrid(){
+  var items=MENU.filter(function(m){return m.cat===selCat;});
+  var h='<div class="time-row" style="grid-column:1/-1">'+TIMES.map(function(t){
+    return'<button class="tp'+(CUR.time===t?' on':'')+'" onclick="setCurTime(\''+t+'\')">'+t+'</button>';
+  }).join('')+'</div>';
+
+  if(!items.length){
+    h+='<div class="empty" style="grid-column:1/-1">এই ক্যাটাগরিতে কোনো আইটেম নেই। মেনু থেকে যোগ করুন।</div>';
+  } else {
+    h+=items.map(function(m){
+      var q=CUR.items[m.id]||0;
+      return'<div class="icard'+(q>0?' active':'')+'">'+
+        '<div class="iname">'+m.name+'</div>'+
+        '<div class="iprice" style="color:'+CC[m.cat]+'">৳'+m.price+'</div>'+
+        '<div class="qrow">'+
+          '<button class="qb qm" onclick="addQ(\''+m.id+'\',-1)">-</button>'+
+          '<span class="qn">'+q+'</span>'+
+          '<button class="qb qp" style="background:'+CC[m.cat]+'" onclick="addQ(\''+m.id+'\',1)">+</button>'+
+        '</div>'+
+        (q>0?'<div class="isub">৳'+(m.price*q)+'</div>':'')+
+      '</div>';
+    }).join('');
+  }
+  html("ITEM_GRID",h);
+  renderOrderSummary();
+}
+
+function setCurTime(t){CUR.time=t;renderItemGrid();}
+function addQ(id,amt){
+  var q=(CUR.items[id]||0)+amt;
+  if(q<=0) delete CUR.items[id]; else CUR.items[id]=q;
+  renderItemGrid();
+}
+
+function renderOrderSummary(){
+  var ids=Object.keys(CUR.items);
+  if(!ids.length){html("ORD_SUM","");return;}
+  var sub=0;
+  var rows=ids.map(function(id){
+    var m=MBI[id];if(!m)return"";
+    var q=CUR.items[id];var t=m.price*q;sub+=t;
+    return'<div class="srow"><span>'+m.name+' x '+q+'</span><span class="gray">৳'+t+'</span></div>';
+  }).join('');
+
+  var dPct=n(el("DISC")?el("DISC").value:0);
+  var disc=Math.round(sub*dPct/100);
+  var total=sub-disc;
+
+  html("ORD_SUM",'<div class="card"><div class="ctitle">📝 অর্ডারের সারসংক্ষেপ ('+CUR.time+')</div>'+
+    rows+
+    '<div class="div"></div>'+
+    '<div class="srow"><span>উপ-মোট</span><span>৳'+sub+'</span></div>'+
+    '<div class="srow"><span>ছাড় ('+dPct+'%)</span><span class="rc">-৳'+disc+'</span></div>'+
+    '<div class="srow fw7" style="font-size:14px"><span>সর্বমোট</span><span class="gc">৳'+total+'</span></div>'+
+    '<div class="div"></div>'+
+
+    '</div>');
+}
+
+if(el("DISC")) el("DISC").oninput=renderOrderSummary;
+
+function saveOrder(){
+  var ids=Object.keys(CUR.items);if(!ids.length){alert("অর্ডার খালি!");return;}
+  var sub=0;
+  var items=ids.map(function(id){
+    var m=MBI[id];sub+=(m.price*CUR.items[id]);
+    return{id:id,qty:CUR.items[id],p:m.price};
+  });
+  var dPct=n(el("DISC").value);var disc=Math.round(sub*dPct/100);var total=sub-disc;
+  var o={id:"o_"+Date.now(),date:today(),time:CUR.time,items:items,sub:sub,disc:disc,total:total};
+  ST.orders.push(o);save("orders");
+  CUR.items={};el("DISC").value=0;
+  toast("✅ অর্ডার সেভ হয়েছে! মোট: ৳"+total);
+  renderItemGrid();renderTodayOrders();updateHeader();
+}
+
+function renderTodayOrders(){
+  var td=today();var ords=ST.orders.filter(function(o){return o.date===td;}).reverse();
+  html("TODAY_ORDS",ords.length?ords.map(function(o){
+    var details=a(o.items).map(function(it){var m=MBI[it.id];return(m?m.name:"?")+" ("+it.qty+")";}).join(", ");
+    return'<div class="ord-item"><div class="rb"><span class="fw7 fs12">'+o.time+' — ৳'+o.total+'</span><button class="br" onclick="delOrder(\''+o.id+'\')">🗑️</button></div><div class="fs11 gray" style="margin-top:3px">'+details+'</div>'+(o.cusName?'<div class="fs11 bc2 mt7">👤 '+o.cusName+(o.cusPhone?' ('+o.cusPhone+')':'')+'</div>':'')+'</div>';
+  }).join(''):'<div class="empty">আজ কোনো অর্ডার সেভ করা হয়নি</div>');
+}
+function delOrder(id){if(!confirm("অর্ডারটি মুছে ফেলবেন?"))return;ST.orders=ST.orders.filter(function(o){return o.id!==id;});save("orders");renderTodayOrders();updateHeader();}
+
+// EXPENSE — sub-item based
+function saveExpCats(){localStorage.setItem("st_exp_cats",JSON.stringify(EXP_CATS_OBJ));}
+
+function reloadExpCats(){
+  EXP_CATS_OBJ=JSON.parse(localStorage.getItem("st_exp_cats")||JSON.stringify(DEFAULT_EXP_CATS));
+  EXP_CATS_OBJ.forEach(function(c){if(!c.items){var def=DEFAULT_EXP_CATS.find(function(d){return d.name===c.name;});c.items=def?def.items.slice():[];}});
+  EXP_CATS=EXP_CATS_OBJ.map(function(x){return x.name;});
+  EXP_ICONS={};EXP_COLORS={};EXP_ITEMS={};
+  EXP_CATS_OBJ.forEach(function(x){EXP_ICONS[x.name]=x.icon;EXP_COLORS[x.name]=x.color;EXP_ITEMS[x.name]=x.items||[];});
+}
+
+function expSubKey(cat,item){return cat+"__"+item;}
+
+function renderExpItems(){
+  var td=el("EXP_DATE")?el("EXP_DATE").value||today():today();
+  var curExps=ST.expenses.filter(function(e){return e.date===td;});
+  var grandTotal=0;
+
+  html("EXP_CARDS",EXP_CATS_OBJ.map(function(catObj){
+    var cat=catObj.name;
+    var col=catObj.color;
+    var ico=catObj.icon;
+    var items=catObj.items||[];
+
+    // ক্যাটাগরির মোট হিসাব
+    var catTotal=curExps.filter(function(e){return e.cat===cat;}).reduce(function(s,e){return s+n(e.amt);},0);
+    grandTotal+=catTotal;
+
+    var itemRows=items.map(function(item){
+      var key=expSubKey(cat,item);
+      var match=curExps.find(function(e){return e.cat===cat && e.item===item;});
+      var v=match?match.amt:"";
+      return'<div class="exp-row" id="EXPROW_'+key+'">'+
+        '<span style="font-size:14px;font-weight:600;color:#475569">'+item+'</span>'+
+        '<div style="display:flex;align-items:center;gap:5px">'+
+          '<span style="color:#94a3b8;font-weight:700">৳</span>'+
+          '<input class="exp-inp" type="number" min="0" placeholder="০" value="'+(v||'')+'" '+
+            'oninput="saveExpSub(\''+cat+'\',\''+item+'\',this.value,\''+td+'\')" id="EXPINP_'+key+'">'+
+          '<button onclick="delExpSubItem(\''+cat+'\',\''+item+'\')" style="background:none;border:none;color:#dc2626;font-size:16px;padding:2px 4px;cursor:pointer">×</button>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+
+    var isOpen=catTotal>0;
+    var bodyId="EXPBODY_"+cat;
+    var arrowId="EXPARROW_"+cat;
+    return'<div class="card" style="border-left:5px solid '+col+';margin-bottom:12px;padding-bottom:'+(isOpen?'16px':'14px')+'" id="EXPCAT_'+cat+'">'+
+      '<div class="acc-header" onclick="toggleExpAcc(\''+bodyId+'\',\''+arrowId+'\')">'+
+        '<div style="display:flex;align-items:center;gap:9px">'+
+          '<span style="font-size:24px">'+ico+'</span>'+
+          '<span style="font-size:17px;font-weight:700;color:'+col+'">'+cat+'</span>'+
+        '</div>'+
+        '<div style="display:flex;align-items:center;gap:8px">'+
+          '<span style="font-size:16px;font-weight:800;color:'+col+'" id="EXPCTOT_'+cat+'">৳'+catTotal+'</span>'+
+          '<span class="acc-arrow'+(isOpen?' open':'')+'" id="'+arrowId+'">▼</span>'+
+        '</div>'+
+      '</div>'+
+      '<div class="acc-body'+(isOpen?' open':'')+'" id="'+bodyId+'" style="margin-top:'+(isOpen?'10px':'0')+'">'+
+        itemRows+
+        '<div style="display:flex;gap:7px;margin-top:10px">'+
+          '<input class="fi" id="EXPNEW_'+cat+'" placeholder="নতুন আইটেম যোগ..." style="margin:0;flex:1;font-size:13px;padding:8px 10px" type="text">'+
+          '<button onclick="addExpSubItem(\''+cat+'\')" style="background:'+col+';color:#fff;border:none;border-radius:9px;padding:8px 13px;font-size:13px;font-weight:700;cursor:pointer">+ যোগ</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join(''));
+
+  el("EXP_GT").textContent="৳"+grandTotal;
+}
+
+function toggleExpAcc(bodyId,arrowId){
+  var body=document.getElementById(bodyId);
+  var arrow=document.getElementById(arrowId);
+  if(!body) return;
+  var isOpen=body.classList.contains('open');
+  if(isOpen){
+    body.classList.remove('open');
+    body.style.marginTop='0';
+    if(arrow) arrow.classList.remove('open');
+  } else {
+    body.classList.add('open');
+    body.style.marginTop='10px';
+    if(arrow) arrow.classList.add('open');
+  }
+}
+
+function saveExpSub(cat,item,val,date){
+  var td=date||today();
+  var v=Math.max(0,n(val));
+  // এই date+cat+item এর পুরনো entry সরাও
+  ST.expenses=ST.expenses.filter(function(e){
+    return!(e.date===td && e.cat===cat && e.item===item);
+  });
+  if(v>0) ST.expenses.push({date:td,cat:cat,item:item,amt:v});
+  save("expenses");
+  // ক্যাটাগরি মোট আপডেট
+  var td2=el("EXP_DATE")?el("EXP_DATE").value||today():today();
+  var catTotal=ST.expenses.filter(function(e){return e.date===td2 && e.cat===cat;}).reduce(function(s,e){return s+n(e.amt);},0);
+  var catEl=document.getElementById("EXPCAT_"+cat);
+  if(catEl){
+    var catTotEl=document.getElementById("EXPCTOT_"+cat);
+    if(catTotEl) catTotEl.textContent="৳"+catTotal;
+  }
+  var grandTot=ST.expenses.filter(function(e){return e.date===td2;}).reduce(function(s,e){return s+n(e.amt);},0);
+  el("EXP_GT").textContent="৳"+grandTot;
+  updateHeader();
+}
+
+function addExpSubItem(cat){
+  var inp=el("EXPNEW_"+cat);
+  var name=inp?inp.value.trim():"";
+  if(!name){toast("আইটেমের নাম দিন!","err");return;}
+  var catObj=EXP_CATS_OBJ.find(function(c){return c.name===cat;});
+  if(!catObj)return;
+  if(catObj.items.indexOf(name)!==-1){toast("এই আইটেম আগেই আছে!","err");return;}
+  catObj.items.push(name);
+  saveExpCats();reloadExpCats();renderExpItems();
+  toast("✅ '"+name+"' যোগ হয়েছে");
+}
+
+function delExpSubItem(cat,item){
+  var catObj=EXP_CATS_OBJ.find(function(c){return c.name===cat;});
+  if(!catObj)return;
+  catObj.items=catObj.items.filter(function(i){return i!==item;});
+  saveExpCats();reloadExpCats();
+  // এই item এর expense data মুছি না (history থাকুক), শুধু UI থেকে সরাই
+  renderExpItems();
+  toast("'"+item+"' সরানো হয়েছে");
+}
+
+// BAKI
+function renderBaki(){
+  var tot=0,pd=0;ST.baki.forEach(function(b){if(b.status==="unpaid")tot+=n(b.amt);else pd+=n(b.amt);});
+  html("BK_OVR",'<div class="sg2"><div class="sc"><div class="sv rc">৳'+tot+'</div><div class="sl">মোট বাকি</div></div><div class="sc"><div class="sv gc">৳'+pd+'</div><div class="sl">মোট সংগৃহীত</div></div></div>');
+  var un=ST.baki.filter(function(b){return b.status==="unpaid" && b.dueDate && b.dueDate<today();}).length;
+  if(un>0) html("BK_UNBN",'<div class="banner-red fw7 fs12 rc">⚠️ '+un+' টি বাকির মেয়াদ শেষ হয়েছে! তাগাদা দিন।</div>'); else html("BK_UNBN","");
+
+  var list=ST.baki.slice().reverse();
+  html("BK_LIST",'<div class="card"><div class="ctitle">📋 বাকির তালিকা</div>'+(list.length?list.map(function(b){
+    var unpaid=b.status==="unpaid";
+    return'<div class="ord-item" style="border-left:3px solid '+(unpaid?'#dc2626':'#16a34a')+'"><div class="rb"><span class="fw7">'+b.name+'</span><span class="fw7 '+(unpaid?'rc':'gc')+'">৳'+b.amt+'</span></div><div class="fs11 gray" style="margin-top:2px">'+(b.phone?'📞 '+b.phone+' | ':'')+'তারিখ: '+b.date+'</div>'+(b.dueDate?'<div class="fs11 '+(unpaid && b.dueDate<today()?'rc fw7':'gray')+'">⏳ পরিশোধের তারিখ: '+b.dueDate+'</div>':'')+(b.note?'<div class="fs11 gray italic">📝 '+b.note+'</div>':'')+'<div class="row mt7">'+(unpaid?'<button class="bg" onclick="setBakiStatus(\''+b.id+'\',\'paid\')">✓ পরিশোধিত</button>':'<button class="bgr" onclick="setBakiStatus(\''+b.id+'\',\'unpaid\')">✕ অপরিশোধিত</button>')+'<button class="br" style="padding:4px 8px" onclick="delBaki(\''+b.id+'\')">🗑️</button></div></div>';
+  }).join(''):'<div class="empty">কোনো বাকির রেকর্ড নেই</div>')+'</div>');
+}
+function addBaki(){
+  var name=s(el("BK_NAME").value).trim();var amt=n(el("BK_AMT").value);
+  if(!name||amt<=0){alert("নাম ও সঠিক পরিমাণ দিন!");return;}
+  ST.baki.push({id:"b_"+Date.now(),date:today(),name:name,phone:s(el("BK_PHONE").value).trim(),amt:amt,dueDate:el("BK_DUE").value,note:s(el("BK_NOTE").value).trim(),status:"unpaid"});
+  save("baki");renderBaki();
+  el("BK_NAME").value="";el("BK_PHONE").value="";el("BK_AMT").value="";el("BK_DUE").value="";el("BK_NOTE").value="";
+}
+function setBakiStatus(id,st){var b=ST.baki.find(function(x){return x.id===id;});if(b){b.status=st;save("baki");renderBaki();}}
+function delBaki(id){if(!confirm("মুছে ফেলবেন?"))return;ST.baki=ST.baki.filter(function(x){return x.id!==id;});save("baki");renderBaki();}
+
+
+// MENU EDITOR
+var menuCatFilter="";
+function renderMenuEditor(){
+  html("CAT_MGMT_LIST",CATS_OBJ.map(function(c){
+    return'<div class="row" style="justify-content:space-between;background:#f8fafc;padding:6px;border-radius:7px;margin-bottom:4px"><div><span style="color:'+c.color+'">■</span> <span class="fw7">'+c.name+'</span></div><button class="br" style="padding:2px 6px" onclick="delCategory(\''+c.name+'\')">🗑️</button></div>';
+  }).join(''));
+
+  var sel=el("NEW_ITEM_CAT");var curVal=sel?sel.value:"";
+  sel.innerHTML=CATS.map(function(c){return'<option value="'+c+'">'+c+'</option>';}).join('');
+  if(curVal && CATS.indexOf(curVal)!==-1)sel.value=curVal;
+
+  el("MENU_COUNT").textContent="মোট: "+MENU.length+" টি আইটেম";
+  html("MENU_CAT_FILTER",'<button class="pill'+(!menuCatFilter?' on':'')+'" onclick="setMenuCatFilter(\'\')">সব</button>'+CATS.map(function(c){
+    return'<button class="pill'+(menuCatFilter===c?' on':'')+'" style="'+(menuCatFilter===c?'background:'+CC[c]:'')+'" onclick="setMenuCatFilter(\''+c+'\')">'+c+'</button>';
+  }).join(''));
+
+  var filtered=MENU.filter(function(m){return!menuCatFilter || m.cat===menuCatFilter;});
+  html("MENU_EDIT_LIST",filtered.length?filtered.map(function(m){
+    return'<div class="exp-row"><div><span class="fs11 fw7" style="color:'+CC[m.cat]+'">['+m.cat+']</span> <span class="fw7">'+m.name+'</span></div><div class="row"><input class="exp-inp" type="number" value="'+m.price+'" onchange="editMenuPrice(\''+m.id+'\',this.value)"> ৳ <button class="br" style="padding:4px 6px;margin-left:4px" onclick="delMenuItem(\''+m.id+'\')">🗑️</button></div></div>';
+  }).join(''):'<div class="empty">কোনো আইটেম নেই</div>');
+}
+function setMenuCatFilter(c){menuCatFilter=c;renderMenuEditor();}
+function addCategory(){
+  var name=s(el("NEW_CAT_NAME").value).trim();var col=el("NEW_CAT_COLOR").value;
+  if(!name){alert("নাম দিন!");return;}if(CATS.indexOf(name)!==-1){alert("ইতিমধ্যে আছে!");return;}
+  CATS_OBJ.push({name:name,color:col});localStorage.setItem("st_cats",JSON.stringify(CATS_OBJ));
+  el("NEW_CAT_NAME").value="";reloadMenuData();renderMenuEditor();
+}
+function delCategory(name){if(!confirm("ক্যাটাগরি মুছলে এর ভেতরের সব আইটেমও মুছে যাবে! নিশ্চিত?"))return;CATS_OBJ=CATS_OBJ.filter(function(c){return c.name!==name;});localStorage.setItem("st_cats",JSON.stringify(CATS_OBJ));MENU=MENU.filter(function(m){return m.cat!==name;});localStorage.setItem("st_menu",JSON.stringify(MENU));if(menuCatFilter===name)menuCatFilter="";reloadMenuData();renderMenuEditor();}
+function addMenuItem(){
+  var cat=el("NEW_ITEM_CAT").value;var name=s(el("NEW_ITEM_NAME").value).trim();var price=n(el("NEW_ITEM_PRICE").value);
+  if(!cat||!name||price<=0){alert("সব তথ্য সঠিকভাবে দিন!");return;}
+  var id="m_"+Date.now();MENU.push({id:id,cat:cat,name:name,price:price});localStorage.setItem("st_menu",JSON.stringify(MENU));
+  el("NEW_ITEM_NAME").value="";el("NEW_ITEM_PRICE").value="";reloadMenuData();renderMenuEditor();
+}
+function editMenuPrice(id,p){var m=MENU.find(function(x){return x.id===id;});if(m){m.price=Math.max(1,n(p));localStorage.setItem("st_menu",JSON.stringify(MENU));reloadMenuData();}}
+function delMenuItem(id){if(!confirm("আইটেমটি মেনু থেকে মুছে ফেলবেন?"))return;MENU=MENU.filter(function(x){return x.id!==id;});localStorage.setItem("st_menu",JSON.stringify(MENU));reloadMenuData();renderMenuEditor();}
+
+// BACKUP HISTORY & UTILS
+function saveBackupHistory(label){
+  var hist=lsGet("st_bak_hist",[]);hist.unshift(label);hist=hist.slice(0,5);lsSet("st_bak_hist",hist);
+}
+function renderBackup(){
+  var td=today();
+  var oCnt=ST.orders.length, eCnt=ST.expenses.length, bCnt=ST.baki.length;
+  html("BKP_STATS",'<div class="sc"><div class="sv bc2">'+oCnt+'</div><div class="sl">মোট অর্ডার</div></div><div class="sc"><div class="sv rc">'+eCnt+'</div><div class="sl">খরচ এন্ট্রি</div></div><div class="sc"><div class="sv oc">'+bCnt+'</div><div class="sl">বাকি রেকর্ড</div></div>');
+
+  var hist=lsGet("st_bak_hist",[]);
+  html("BKP_HISTORY",hist.length?hist.map(function(h){return'<div class="srow text-muted" style="font-size:11px"><span>'+h+'</span></div>';}).join(''):'<div class="empty">কোনো ইতিহাস নেই</div>');
+}
+function exportBackup(){
+  var data={orders:ST.orders,expenses:ST.expenses,baki:ST.baki,ratings:ST.ratings,targets:ST.targets,menu:lsGet("st_menu",null),cats:lsGet("st_cats",null)};
+  var str=JSON.stringify(data);var blob=new Blob([str],{type:"application/json"});var a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);a.download="দোকান_ব্যাকআপ_"+today()+".json";a.click();
+  saveBackupHistory("💾 Export — "+new Date().toISOString().slice(0,16).replace('T',' '));renderBackup();
+}
+function copyBackup(){
+  var data={orders:ST.orders,expenses:ST.expenses,baki:ST.baki,ratings:ST.ratings,targets:ST.targets,menu:lsGet("st_menu",null),cats:lsGet("st_cats",null)};
+  navigator.clipboard.writeText(JSON.stringify(data)).then(function(){alert("✅ ব্যাকআপ ডেটা ক্লিপবোর্ডে কপি হয়েছে!");}).catch(function(){alert("কপি করা যায়নি।");});
+}
+function importFromFile(inp){
+  if(!inp.files||!inp.files[0])return;var reader=new FileReader();
+  reader.onload=function(e){el("BKP_IMPORT_TEXT").value=e.target.result;};reader.readAsText(inp.files[0]);
+}
+function importBackup(){
+  var str=el("BKP_IMPORT_TEXT").value.trim();if(!str){alert("কোনো ডেটা পাওয়া যায়নি!");return;}
+  if(!confirm("⚠️ সতর্কবার্তা!\n\nবিদ্যমান সব ডেটা মুছে গিয়ে এই নতুন ডেটা ওভাররাইট হবে। আপনি কি নিশ্চিত?"))return;
+  try{
+    var parsed=JSON.parse(str);
+    if(parsed.orders) {ST.orders=a(parsed.orders);save("orders");}
+    if(parsed.expenses){ST.expenses=a(parsed.expenses);save("expenses");}
+    if(parsed.baki){ST.baki=a(parsed.baki);save("baki");}
+    if(parsed.ratings){ST.ratings=a(parsed.ratings);save("ratings")}
+    if(parsed.targets){ST.targets=parsed.targets;save("targets");}
+    if(Array.isArray(parsed.menu)){localStorage.setItem("st_menu",JSON.stringify(parsed.menu));}
+    if(Array.isArray(parsed.cats)){localStorage.setItem("st_cats",JSON.stringify(parsed.cats));}
+    reloadMenuData();
+    saveBackupHistory("📂 Import — "+new Date().toISOString().slice(0,10));el("BKP_IMPORT_TEXT").value="";
+    renderCatPills();renderItemGrid();renderTodayOrders();updateHeader();renderHome();renderBackup();
+    alert("✅ ডেটা সফলভাবে Restore হয়েছে!\nমোট অর্ডার: "+ST.orders.length+"\nমেনু আইটেম: "+MENU.length);
+  }catch(err){alert("❌ ভুল ডেটা ফরম্যাট! সঠিক JSON পেস্ট করুন।");}
+}
+function resetAllData(){
+  if(!confirm("⚠️ সর্বশেষ সতর্কতা!\n\nসব ডেটা স্থায়ীভাবে মুছে যাবে। আগে ব্যাকআপ নিন!\n\nসত্যিই মুছবেন?"))return;if(!confirm("শেষবার নিশ্চিত করুন — মুছে দেব?"))return;
+  ["st_ord","st_exp","st_bak","st_rat","st_tgt"].forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});
+  ST.orders=[];ST.expenses=[];ST.baki=[];ST.ratings=[];ST.targets={};
+  updateHeader();renderHome();renderTodayOrders();renderBackup();alert("সব ডেটা মুছে গেছে।");
+}
+
+// REPORT
+(function(){el("RPT_MON").value=thisMonth();})();
+function renderReport(){
+  var selMon=el("RPT_MON").value;
+  html("RPT_TYPE",['monthly','yearly'].map(function(t){
+    return'<button class="pill'+(selRptType===t?' on':'')+'" style="'+(selRptType===t?'background:#1e3a5f':'')+'" onclick="setRptType(\''+t+'\')">'+(t==='monthly'?'মাসিক রিপোর্ট':'বার্ষিক রিপোর্ট')+'</button>';
+  }).join(''));
+
+  var isMon=selRptType==="monthly";
+  var rOrds=ST.orders.filter(function(o){return isMon?o.date.slice(0,7)===selMon:o.date.slice(0,4)===selMon.slice(0,4);});
+  var rExps=ST.expenses.filter(function(e){return isMon?e.date.slice(0,7)===selMon:e.date.slice(0,4)===selMon.slice(0,4);});
+
+  var rev=rOrds.reduce(function(s,o){return s+n(o.total);},0);
+  var exp=rExps.reduce(function(s,e){return s+n(e.amt);},0);
+  var prof=rev-exp;
+
+  el("RPT_CTITLE").textContent=isMon?"📈 দৈনিক বিক্রয় চার্ট ("+selMon+")":"📈 মাসিক বিক্রয় চার্ট ("+selMon.slice(0,4)+")";
+  html("RPT_KPI",'<div class="sc"><div class="sv gc">৳'+rev+'</div><div class="sl">মোট রাজস্ব</div></div><div class="sc"><div class="sv rc">৳'+exp+'</div><div class="sl">মোট খরচ</div></div><div class="sc"><div class="sv" style="color:'+(prof>=0?'#16a34a':'#dc2626')+'">৳'+prof+'</div><div class="sl">নিট লাভ</div></div>');
+
+  // CHART DATA
+  var cLabels=[], cValues=[];
+  if(isMon){
+    var days=new Date(n(selMon.slice(0,4)),n(selMon.slice(5,7)),0).getDate();days=isFinite(days)?days:30;
+    for(var d=1;d<=days;d++){var ds=selMon+"-"+(d<10?"0"+d:d);cLabels.push(d);var sum=rOrds.filter(function(o){return o.date===ds;}).reduce(function(s,o){return s+n(o.total);},0);cValues.push(sum);}
+  } else {
+    for(var m=1;m<=12;m++){var ms=selMon.slice(0,4)+"-"+(m<10?"0"+m:m);cLabels.push(m+" মাস");var sum=rOrds.filter(function(o){return o.date.slice(0,7)===ms;}).reduce(function(s,o){return s+n(o.total);},0);cValues.push(sum);}
+  }
+  var cmx=Math.max.apply(null,cValues);cmx=cmx||1;
+  html("RPT_CHART",'<div class="bchart">'+cLabels.map(function(lbl,i){
+    var h=Math.max(3,Math.round(cValues[i]/cmx*75));
+    return'<div class="bc"><div class="bb2" style="height:'+h+'px"></div><div class="bl">'+lbl+'</div></div>';
+  }).join('')+'</div>');
+
+  // CAT PIE SUBSTITUTE
+  var catRev={};CATS.forEach(function(c){catRev[c]=0;});
+  rOrds.forEach(function(o){a(o.items).forEach(function(it){var m=MBI[it.id];if(m && catRev[m.cat]!==undefined){catRev[m.cat]+=(it.qty*it.p);}});});
+  var catTot=Object.keys(catRev).reduce(function(s,k){return s+catRev[k];},0);catTot=catTot||1;
+  html("RPT_CAT",'<div class="pi-wrap"><div class="pi-leg">'+CATS.map(function(c){
+    var pct=Math.round(catRev[c]/catTot*100);
+    return'<div class="pi-li"><span class="pi-dot" style="background:'+CC[c]+'"></span><span>'+c+' ('+pct+'%) — ৳'+catRev[c]+'</span></div>';
+  }).join('')+'</div></div>');
+
+  // TIME ANALYSIS
+  var tRev={};TIMES.forEach(function(t){tRev[t]=0;});
+  rOrds.forEach(function(o){if(o.time && tRev[o.time]!==undefined)tRev[o.time]+=n(o.total);});
+  html("RPT_TIME",TIMES.map(function(t){
+    return'<div class="srow"><span>'+t+' বেচাকেনা</span><span class="fw7" style="color:'+TC[t]+'">৳'+tRev[t]+'</span></div>';
+  }).join(''));
+
+  // LAST 7 DAYS
+  var wk=[];
+  for(var i=6;i>=0;i--){var wd=new Date();wd.setDate(wd.getDate()-i);wk.push(wd.toISOString().slice(0,10));}
+  var ws=wk.map(function(d){return ST.orders.filter(function(o){return o.date===d;}).reduce(function(s,o){return s+n(o.total);},0);});
+  var wmx=Math.max.apply(null,ws);wmx=wmx||1;
+  var td7=today();
+  html("RPT_WEEK",'<div style="display:flex;gap:5px;align-items:flex-end;height:80px;padding-bottom:22px">'+
+    wk.map(function(d,i){
+      var h=Math.max(4,Math.round(ws[i]/wmx*55));
+      var lbl=d===td7?"আজ":d.slice(8,10)+'/'+d.slice(5,7);
+      return'<div style="flex:1;display:flex;flex-direction:column;align-items:center">'+
+        '<div style="font-size:8px;color:#94a3b8;margin-bottom:2px">৳'+ws[i]+'</div>'+
+        '<div style="width:14px;border-radius:2px 2px 0 0;background:'+(d===td7?'#ea580c':'#1e3a5f')+';height:'+h+'px"></div>'+
+        '<div style="font-size:8px;color:#94a3b8;margin-top:2px;white-space:nowrap">'+lbl+'</div></div>';
+    }).join('')+'</div>');
+
+  // PROD TOP/LOW
+  var pQty={};
+  rOrds.forEach(function(o){a(o.items).forEach(function(it){pQty[it.id]=(pQty[it.id]||0)+it.qty;});});
+  var pArr=Object.keys(pQty).map(function(id){return{m:MBI[id],qty:pQty[id]};}).filter(function(x){return x.m;});
+  var topP=pArr.slice().sort(function(a,b){return b.qty-a.qty;}).slice(0,3);
+  var lowP=pArr.slice().sort(function(a,b){return a.qty-b.qty;}).slice(0,3);
+  html("RPT_PROD",'<div class="fw7 fs11 gc">🔥 সর্বাধিক বিক্রিত আইটেম</div>'+(topP.length?topP.map(function(x){return'<div class="srow"><span>'+x.m.name+'</span><span>'+x.qty+' পিস</span></div>';}).join(''):'<div class="empty">ডেটা নেই</div>')+'<div class="div"></div><div class="fw7 fs11 rc">📉 সর্বনিম্ন বিক্রিত আইটেম</div>'+(lowP.length?lowP.map(function(x){return'<div class="srow"><span>'+x.m.name+'</span><span>'+x.qty+' পিস</span></div>';}).join(''):'<div class="empty">ডেটা নেই</div>'));
+
+  // HEATMAP (Last 28 Days)
+  var hmDates=[];for(var i=27;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);hmDates.push(d.toISOString().slice(0,10));}
+  var hmMax=Math.max.apply(null,hmDates.map(function(d){return ST.orders.filter(function(o){return o.date===d;}).reduce(function(s,o){return s+n(o.total);},0);}));hmMax=hmMax||1;
+  html("RPT_HM",'<div class="hmlb">'+["শনি","রবি","সোম","মঙ্গল","বুধ","বৃহ","শুক্র"].map(function(l){return'<div class="hmlbl">'+l+'</div>';}).join('')+'</div><div class="hm">'+hmDates.map(function(d){
+    var total=ST.orders.filter(function(o){return o.date===d;}).reduce(function(s,o){return s+n(o.total);},0);
+    var op=total===0?0.08:Math.max(0.2,total/hmMax);
+    return'<div class="hmc" style="background:rgba(234,88,12,'+op+')" title="+'+d+': ৳'+total+'"></div>';
+  }).join('')+'</div>');
+
+  // TARGET VS ACTUAL
+  var tSum=0;
+  if(isMon){
+    var days=new Date(n(selMon.slice(0,4)),n(selMon.slice(5,7)),0).getDate();days=isFinite(days)?days:30;
+    for(var d=1;d<=days;d++){var ds=selMon+"-"+(d<10?"0"+d:d);tSum+=n((ST.targets[ds]||{}).daily,1000);}
+  }else{
+    for(var m=1;m<=12;m++){for(var d=1;d<=31;d++){var ds=selMon.slice(0,4)+"-"+(m<10?"0"+m:m)+"-"+(d<10?"0"+d:d);tSum+=n((ST.targets[ds]||{}).daily,1000);}}
+  }
+  var tPct=tSum>0?Math.min(100,Math.round(rev/tSum*100)):0;
+  html("RPT_TGT",'<div class="srow"><span>মোট সেট করা লক্ষ্য</span><span class="fw7">৳'+tSum+'</span></div><div class="srow"><span>অর্জিত বিক্রয় রাজস্ব</span><span class="fw7 oc">৳'+rev+'</span></div><div class="srow"><span>পূরণ শতকরা হার</span><span class="fw7 gc">'+tPct+'%</span></div>');
+
+  // MONTH COMPARISON
+  if(isMon){
+    el("RPT_CMP_CARD").style.display="block";
+    var curYr=n(selMon.slice(0,4)), curMo=n(selMon.slice(5,7));
+    var prevMoVal=curMo===1?12:curMo-1;var prevYrVal=curMo===1?curYr-1:curYr;
+    var prevMonStr=prevYrVal+"-"+(prevMoVal<10?"0"+prevMoVal:prevMoVal);
+
+    var prevOrds=ST.orders.filter(function(o){return o.date.slice(0,7)===prevMonStr;});
+    var prevRev=prevOrds.reduce(function(s,o){return s+n(o.total);},0);
+
+    var cmpMax=Math.max(rev,prevRev)||1;
+    var hCur=Math.max(5,Math.round(rev/cmpMax*80));
+    var hPrev=Math.max(5,Math.round(prevRev/cmpMax*80));
+
+    html("RPT_CMP",'<div class="cmp-bar-wrap">'+
+      '<div class="cmp-col"><div class="cmp-bars"><div class="cmp-b" style="height:'+hPrev+'px;background:#94a3b8"></div></div><div class="cmp-lbl">গত মাস (৳'+prevRev+')</div></div>'+
+      '<div class="cmp-col"><div class="cmp-bars"><div class="cmp-b" style="height:'+hCur+'px;background:#ea580c"></div></div><div class="cmp-lbl">এই মাস (৳'+rev+')</div></div>'+
+      '</div>');
+  } else {
+    el("RPT_CMP_CARD").style.display="none";
+  }
+
+  // ITEM-WISE REVENUE TABLE
+  el("RPT_PROFIT_PERIOD").textContent=isMon?selMon:selMon.slice(0,4);
+  var pProf={};
+  rOrds.forEach(function(o){a(o.items).forEach(function(it){
+    if(!pProf[it.id]) pProf[it.id]={qty:0,rev:0};
+    pProf[it.id].qty+=it.qty;pProf[it.id].rev+=(it.qty*it.p);
+  });});
+  var pProfArr=Object.keys(pProf).map(function(id){return{m:MBI[id],qty:pProf[id].qty,rev:pProf[id].rev};}).filter(function(x){return x.m;}).sort(function(a,b){return b.rev-a.rev;});
+  var maxRev=Math.max.apply(null,pProfArr.map(function(x){return x.rev;}))||1;
+
+  html("RPT_PROFIT",pProfArr.length?pProfArr.map(function(x){
+    var wPct=Math.min(100,Math.round(x.rev/maxRev*100));
+    return'<div class="pt-row"><div><div class="fw7">'+x.m.name+' <span class="gray fs11">('+x.qty+' পিস)</span></div><div class="pt-bar-wrap" style="width:120px"><div class="pt-bar" style="width:'+wPct+'%;background:'+CC[x.m.cat]+'"></div></div></div><div><span class="profit-badge" style="background:#e0f2fe;color:#0369a1">৳'+x.rev+'</span></div></div>';
+  }).join(''):'<div class="empty">কোনো বেচাকেনা নেই</div>');
+}
+function setRptType(t){selRptType=t;renderReport();}
+function printReport(){window.print();}
+
+// INITIALIZATION ON LOAD
+window.onload=function(){
+  goPanel("home");
+  gdInit();
+};
+
+// ── TELEGRAM BACKUP ──
+var TG_TOKEN='8674820360:AAGq7QOzJI5bwKZurkBnrk1JlI8MEaSdiow';
+var TG_CHAT_ID='7004903898';
+var tgLastBackup=0;
+
+function tgGetData(){
+  return {
+    st_ord:localStorage.getItem('st_ord')||'[]',
+    st_exp:localStorage.getItem('st_exp')||'[]',
+    st_bak:localStorage.getItem('st_bak')||'[]',
+    st_rat:localStorage.getItem('st_rat')||'[]',
+    st_tgt:localStorage.getItem('st_tgt')||'{}',
+    st_menu:localStorage.getItem('st_menu')||'null',
+    st_cats:localStorage.getItem('st_cats')||'null',
+    st_exp_cats:localStorage.getItem('st_exp_cats')||'null',
+    savedAt:new Date().toISOString()
+  };
+}
+
+function tgBackup(silent){
+  var data=tgGetData();
+  var json=JSON.stringify(data);
+  var blob=new Blob([json],{type:'application/json'});
+  var form=new FormData();
+  form.append('chat_id',TG_CHAT_ID);
+  form.append('document',blob,'dokan-backup-'+new Date().toISOString().slice(0,10)+'.json');
+  form.append('caption','🏪 দোকান ট্র্যাকার backup\n📅 '+new Date().toLocaleString('bn-BD'));
+  fetch('https://api.telegram.org/bot'+TG_TOKEN+'/sendDocument',{
+    method:'POST',body:form
+  }).then(function(r){return r.json();}).then(function(d){
+    if(d.ok){
+      tgLastBackup=Date.now();
+      localStorage.setItem('tg_last_backup',tgLastBackup.toString());
+      if(!silent) tgShowToast('✅ Telegram এ backup সম্পন্ন!');
+    } else {
+      if(!silent) tgShowToast('❌ Backup ব্যর্থ হয়েছে');
+    }
+  }).catch(function(){
+    if(!silent) tgShowToast('❌ Internet সমস্যা');
+  });
+}
+
+function jsonBackup(){
+  var data=tgGetData();
+  var json=JSON.stringify(data,null,2);
+  var blob=new Blob([json],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;
+  a.download='dokan-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  tgShowToast('✅ JSON Backup ডাউনলোড হয়েছে!');
+}
+
+function tgShowToast(msg){
+  var t=document.createElement('div');
+  t.textContent=msg;
+  t.style.cssText='position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#1e3a5f;color:#fff;padding:10px 18px;border-radius:20px;font-size:14px;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.3);white-space:nowrap;font-family:inherit';
+  document.body.appendChild(t);
+  setTimeout(function(){t.remove();},3000);
+}
+
+function tgUpdateUI(){
+  var btn=document.getElementById('gd_btn');
+  var status=document.getElementById('gd_status');
+  if(!btn) return;
+  btn.textContent='📲 Telegram Backup';
+  btn.style.background='#0088cc';
+  btn.onclick=function(){tgBackup(false);};
+  var last=localStorage.getItem('tg_last_backup');
+  if(last && status){
+    var d=new Date(parseInt(last));
+    status.textContent='শেষ backup: '+d.toLocaleTimeString('bn-BD');
+  } else if(status){
+    status.textContent='Tap করে backup নিন';
+  }
+}
+
+// প্রতি ৩০ মিনিটে auto backup
+setInterval(function(){
+  var now=Date.now();
+  var last=parseInt(localStorage.getItem('tg_last_backup')||'0');
+  if(now-last>30*60*1000){
+    tgBackup(true);
+  }
+},5*60*1000);
+
+// রাত ১১টায় daily backup
+function tgScheduleNightBackup(){
+  var now=new Date();
+  var night=new Date();
+  night.setHours(23,0,0,0);
+  if(now>night) night.setDate(night.getDate()+1);
+  var ms=night-now;
+  setTimeout(function(){
+    tgBackup(true);
+    setInterval(function(){tgBackup(true);},24*60*60*1000);
+  },ms);
+}
+
+// App বন্ধ হওয়ার আগে backup
+window.addEventListener('pagehide',function(){
+  var now=Date.now();
+  var last=parseInt(localStorage.getItem('tg_last_backup')||'0');
+  if(now-last>10*60*1000){
+    tgBackup(true);
+  }
+});
+
+function gdInit(){
+  tgUpdateUI();
+  tgScheduleNightBackup();
+  // প্রথমবার খুললে auto backup
+  var last=parseInt(localStorage.getItem('tg_last_backup')||'0');
+  if(Date.now()-last>60*60*1000){
+    setTimeout(function(){tgBackup(true);},3000);
+  }
+}
+
+// Service Worker
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(function(){});
+}
+
+// ── IMPORT SYSTEM ──
+var importParsedData = null;
+
+function importTrigger(){
+  document.getElementById('import_file_input').value='';
+  document.getElementById('import_file_input').click();
+}
+
+function importFromFile(e){
+  var file = e.target.files[0];
+  if(!file) return;
+  if(!file.name.endsWith('.json')){
+    tgShowToast('❌ শুধু .json ফাইল import করা যাবে');
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    try{
+      var data = JSON.parse(ev.target.result);
+      var validKeys = ['st_ord','st_exp','st_bak','st_rat','st_tgt','st_menu','st_cats','st_exp_cats'];
+      var found = validKeys.filter(function(k){ return data[k] !== undefined; });
+      if(found.length === 0){
+        tgShowToast('❌ এটি valid backup ফাইল নয়');
+        return;
+      }
+      importParsedData = data;
+      showImportPreview(data, file.name);
+    } catch(err){
+      tgShowToast('❌ ফাইল পড়তে সমস্যা হয়েছে');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function showImportPreview(data, filename){
+  var orders = [];
+  var expenses = [];
+  var bakis = [];
+  try{ orders = JSON.parse(data.st_ord||'[]'); }catch(e){}
+  try{ expenses = JSON.parse(data.st_exp||'[]'); }catch(e){}
+  try{ bakis = JSON.parse(data.st_bak||'[]'); }catch(e){}
+  var savedAt = data.savedAt ? new Date(data.savedAt).toLocaleString('bn-BD') : 'অজানা';
+  var previewHtml =
+    '<div style="background:#f0fdf4;border-radius:12px;padding:13px;margin-bottom:10px;">' +
+    '<div style="font-size:13px;font-weight:700;color:#15803d;margin-bottom:8px;">📄 ফাইল: '+filename+'</div>' +
+    '<div style="font-size:13px;color:#166534;display:flex;flex-direction:column;gap:5px;">' +
+    '<div>📅 Backup তারিখ: <strong>'+savedAt+'</strong></div>' +
+    '<div>🛒 অর্ডার: <strong>'+orders.length+' টি</strong></div>' +
+    '<div>💸 খরচ রেকর্ড: <strong>'+expenses.length+' টি</strong></div>' +
+    '<div>📋 বাকি: <strong>'+bakis.length+' জন</strong></div>' +
+    (data.st_menu && data.st_menu !== 'null' ? '<div>✏️ কাস্টম মেনু: <strong>আছে</strong></div>' : '') +
+    '</div></div>';
+  document.getElementById('import_preview').innerHTML = previewHtml;
+  document.getElementById('import_modal').style.display = 'flex';
+}
+
+function closeImportModal(){
+  document.getElementById('import_modal').style.display = 'none';
+  importParsedData = null;
+}
+
+function confirmImport(){
+  if(!importParsedData){ closeImportModal(); return; }
+  var data = importParsedData;
+  var keys = ['st_ord','st_exp','st_bak','st_rat','st_tgt','st_menu','st_cats','st_exp_cats'];
+  keys.forEach(function(k){
+    if(data[k] !== undefined) localStorage.setItem(k, data[k]);
+  });
+  closeImportModal();
+  reloadMenuData();
+  renderHome();
+  tgShowToast('✅ Import সফল হয়েছে! ডেটা restore হয়েছে।');
+}
+</script>
+<!-- Backup & Import Buttons -->
+<div id="gd_panel" style="position:fixed;bottom:90px;right:12px;z-index:999;text-align:right;">
+<div id="gd_status" style="font-size:11px;color:#666;margin-bottom:4px;text-align:right;"></div>
+<div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+  <button id="gd_btn" onclick="tgBackup(false)" style="background:#0088cc;color:#fff;border:none;border-radius:20px;padding:8px 14px;font-size:13px;font-family:inherit;box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer;">📲 Telegram Backup</button>
+  <button onclick="jsonBackup()" style="background:#7c3aed;color:#fff;border:none;border-radius:20px;padding:8px 14px;font-size:13px;font-family:inherit;box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer;">💾 JSON Backup</button>
+  <button onclick="importTrigger()" style="background:#16a34a;color:#fff;border:none;border-radius:20px;padding:8px 14px;font-size:13px;font-family:inherit;box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer;">📥 Import Backup</button>
+</div>
+</div>
+
+<!-- Hidden file input for import -->
+<input type="file" id="import_file_input" accept=".json" style="display:none" onchange="importFromFile(event)"/>
+
+<!-- Import Confirm Modal -->
+<div id="import_modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;align-items:flex-end;">
+  <div style="background:#fff;border-radius:20px 20px 0 0;padding:22px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 -8px 32px rgba(0,0,0,.15);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <span style="font-size:17px;font-weight:800;color:#0f1923;">📥 Backup Import</span>
+      <button onclick="closeImportModal()" style="width:34px;height:34px;border-radius:50%;background:#f1f5f9;color:#64748b;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;">✕</button>
+    </div>
+    <div id="import_preview" style="margin-bottom:16px;"></div>
+    <div style="background:#fff7ed;border:2px solid #fed7aa;border-radius:12px;padding:12px;margin-bottom:14px;font-size:13px;color:#92400e;">
+      ⚠️ <strong>সতর্কতা:</strong> Import করলে বর্তমান সব ডেটা মুছে যাবে এবং backup এর ডেটা দিয়ে replace হবে।
+    </div>
+    <div style="display:flex;gap:9px;">
+      <button onclick="confirmImport()" style="flex:1;padding:13px;background:linear-gradient(135deg,#16a34a,#22c55e);border:none;border-radius:13px;color:#fff;font-weight:700;font-size:15px;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(22,163,74,.35);">✅ Import করুন</button>
+      <button onclick="closeImportModal()" style="padding:13px 18px;background:#f1f5f9;border:none;border-radius:13px;color:#64748b;font-weight:700;font-size:15px;cursor:pointer;font-family:inherit;">বাতিল</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
